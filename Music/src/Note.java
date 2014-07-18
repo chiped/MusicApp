@@ -18,5 +18,9 @@ public class Note {
 	public void setPitch(int pitch) {
 		this.pitch = pitch;
 	}
+	@Override
+	public String toString() {
+		return "Note [duration=" + duration + ", pitch=" + pitch + "]";
+	}
 	
 }
