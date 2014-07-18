@@ -22,5 +22,7 @@ public class Note {
 	public String toString() {
 		return "Note [duration=" + duration + ", pitch=" + pitch + "]";
 	}
-	
+	public static Note parseNoteString(String aNoteString){
+		return null;
+	}
 }
