@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
@@ -74,7 +76,8 @@ public class Song {
 				+ key + "; tempo=" + tempo + "; genre=" + genre + ")";
 	}
 
-	public static Song parseMidiFile(File midi) {
+	public static Song makeSongFromMidiFile(File midi) {
+		// TODO
 		return null;
 	}
 
@@ -93,9 +96,57 @@ public class Song {
 
 	}
 
-	public static ArrayList<Song> readSongsFromFile(String fileDirectory) {
-		// TODO
-		return null;
+	public static Song makeSongFromString(String aSongString) {
+		aSongString = aSongString.replace("Song (", "");
+		aSongString = aSongString.replace(")", "");
+		String[] songVariables = aSongString.split("; ");
+
+		String instrument = songVariables[0].replace("instrument=", "");
+		String notesString = songVariables[1].replace("notes=", "");
+		String keyString = songVariables[2].replace("key=", "");
+		String tempoString = songVariables[3].replace("tempo=", "");
+		String genre = songVariables[4].replace("genre=", "");
+
+		ArrayList<Note> notes = new ArrayList<Note>();
+		notesString = notesString.replace("[", "");
+		notesString = notesString.replace("]", "");
+		String[] notesStringArray = notesString.split(", ");
+		for (String noteString : notesStringArray) {
+			notes.add(Note.makeNoteFromString(noteString));
+		}
+
+		ArrayList<String> key = new ArrayList<String>();
+		keyString = keyString.replace("[", "");
+		keyString = keyString.replace("]", "");
+		String[] keyStringArray = keyString.split(", ");
+		for (String note : keyStringArray) {
+			key.add(note);
+		}
+
+		int tempo = Integer.parseInt(tempoString);
+
+		return new Song(instrument, notes, key, tempo, genre);
+	}
+
+	public static ArrayList<Song> makeSongsFromFile(String fileDirectory) {
+		
+		try {
+			File file = new File(fileDirectory + "\\" + "songs.txt");
+			ArrayList<Song> songs = new ArrayList<Song>();
+			
+			BufferedReader inputFile = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = inputFile.readLine()) != null) {
+				songs.add(makeSongFromString(line.replace("\n", "")));
+			}
+			inputFile.close();
+			return null;
+		} catch (Exception e) {
+			System.out.println("song failed to read from file");
+			System.exit(1);
+			return null;
+		}
+
 	}
 
 	public void writeNGramsToFile(String fileDirectory, int n) {
@@ -106,9 +157,10 @@ public class Song {
 
 			BufferedWriter output = new BufferedWriter(new FileWriter(file,
 					true));
-			for(int i = n; i < notes.size(); i++){
-				Ngram ngram = new Ngram(instrument,(ArrayList<Note>) notes.subList(i - n, i),
-						key, tempo,genre);
+			for (int i = n; i < notes.size(); i++) {
+				Ngram ngram = new Ngram(instrument,
+						(ArrayList<Note>) notes.subList(i - n, i), key, tempo,
+						genre);
 				output.write(ngram.toString());
 			}
 			output.close();
@@ -118,14 +170,4 @@ public class Song {
 		}
 
 	}
-
-	/**
-	 *
-	 * @param aSongString
-	 * @return
-	 */
-	public static Song parseSongString(String aSongString) {
-		return null;
-	}
-
 }
