@@ -1,5 +1,7 @@
-
-public class Note {
+public class Note{
+	/**
+	 * 
+	 */
 	private int duration;
 	private int pitch;
 	public Note(int duration, int pitch){
@@ -20,9 +22,24 @@ public class Note {
 	}
 	@Override
 	public String toString() {
-		return "Note [duration=" + duration + ", pitch=" + pitch + "]";
+		return "Note {duration=" + duration + ": pitch=" + pitch + "}";
 	}
-	public static Note parseNoteString(String aNoteString){
-		return null;
+	/**
+	 * Takes string representation of a note {@link #toString()} and converts it to a Note
+	 * @param aNoteString string representation of a note
+	 * @return a Note
+	 */
+	public static Note parseNoteString(String aNoteString){		
+		aNoteString = aNoteString.replace("Note {", "");
+		aNoteString = aNoteString.replace("}", "");
+		
+		String[] noteVariables = aNoteString.split(":");
+		String durationString = noteVariables[0].replace("duration=","");
+		String pitchString = noteVariables[1].replace("pitch=","");
+		
+		int duration = Integer.parseInt(durationString);
+		int pitch = Integer.parseInt(pitchString);
+		
+		return new Note(duration,pitch);
 	}
 }
