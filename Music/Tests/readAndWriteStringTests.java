@@ -50,6 +50,7 @@ public class readAndWriteStringTests {
 		s1.addNote(n1);
 		s1.addNote(n2);
 		s1.addNote(n3);
+		s1.setSongName("Worst Of Lullabies");
 		s1.setGenre("Rock and Roll");
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
@@ -58,8 +59,9 @@ public class readAndWriteStringTests {
 		
 		String notesString = "[Note {duration=0:pitch=0:arrivalTime=0}, Note {duration=1:pitch=1:arrivalTime=1}, Note {duration=2:pitch=2:arrivalTime=2}]";
 		
-		String s1StringTest = "Song (instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
+		String s1StringTest = "Song (songName=Worst Of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
 		String s1String = s1.toString();
+		System.out.println(s1String);
 		assertEquals(s1StringTest, s1String);	
 	}
 	@Test
@@ -78,6 +80,7 @@ public class readAndWriteStringTests {
 		s1.addNote(n1);
 		s1.addNote(n2);
 		s1.addNote(n3);
+		s1.setSongName("Worst of Lullabies");
 		s1.setGenre("Rock and Roll");
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
@@ -86,8 +89,9 @@ public class readAndWriteStringTests {
 		
 		String notesString = "[Note {duration=0:pitch=0:arrivalTime=0}, Note {duration=1:pitch=1:arrivalTime=1}, Note {duration=2:pitch=2:arrivalTime=2}]";
 		
-		String s1StringTest = "Song (instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
+		String s1StringTest = "Song (songName=Worst of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
 		String s1String = s1.toString();
+	
 		assertEquals(s1String, Song.makeSongFromString(s1StringTest).toString());
 	}
 

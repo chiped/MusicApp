@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class Song {
+	private String songName;
 	private String instrument;
 	private ArrayList<Note> notes;
 	private ArrayList<String> key;
@@ -17,8 +18,9 @@ public class Song {
 		key = new ArrayList<String>();
 	}
 
-	protected Song(String instrument, ArrayList<Note> notes,
+	protected Song(String songName, String instrument, ArrayList<Note> notes,
 			ArrayList<String> key, int tempo, String genre) {
+		this.songName = songName;
 		this.instrument = instrument;
 		this.notes = new ArrayList<Note>(notes);
 		this.key = new ArrayList<String>(key);
@@ -26,6 +28,12 @@ public class Song {
 		this.genre = genre;
 	}
 
+	public String getSongName(){
+		return songName;
+	}
+	public void setSongName(String songName){
+		this.songName = songName;
+	}
 	public String getInstrument() {
 		return instrument;
 	}
@@ -72,7 +80,7 @@ public class Song {
 
 	@Override
 	public String toString() {
-		return "Song (instrument=" + instrument + ";notes=" + notes + ";key="
+		return "Song (songName=" + songName +";instrument=" + instrument + ";notes=" + notes + ";key="
 				+ key + ";tempo=" + tempo + ";genre=" + genre + ")";
 	}
 
@@ -101,11 +109,12 @@ public class Song {
 		aSongString = aSongString.replace(")", "");
 		String[] songVariables = aSongString.split(";");
 
-		String instrument = songVariables[0].replace("instrument=", "");
-		String notesString = songVariables[1].replace("notes=", "");
-		String keyString = songVariables[2].replace("key=", "");
-		String tempoString = songVariables[3].replace("tempo=", "");
-		String genre = songVariables[4].replace("genre=", "");
+		String songName = songVariables[0].replace("songName=", "");
+		String instrument = songVariables[1].replace("instrument=", "");
+		String notesString = songVariables[2].replace("notes=", "");
+		String keyString = songVariables[3].replace("key=", "");
+		String tempoString = songVariables[4].replace("tempo=", "");
+		String genre = songVariables[5].replace("genre=", "");
 
 		ArrayList<Note> notes = new ArrayList<Note>();
 		notesString = notesString.replace("[", "");
@@ -125,13 +134,13 @@ public class Song {
 
 		int tempo = Integer.parseInt(tempoString);
 
-		return new Song(instrument, notes, key, tempo, genre);
+		return new Song(songName,instrument, notes, key, tempo, genre);
 	}
 
-	public static ArrayList<Song> makeSongsFromFile(String fileDirectory) {
+	public static ArrayList<Song> makeSongsFromFile(String fileDirectory, String songName) {
 		
 		try {
-			File file = new File(fileDirectory + "\\" + "songs.txt");
+			File file = new File(fileDirectory + "\\" + "song"+songName+".txt");
 			ArrayList<Song> songs = new ArrayList<Song>();
 			
 			BufferedReader inputFile = new BufferedReader(new FileReader(file));
@@ -151,14 +160,14 @@ public class Song {
 
 	public void writeNGramsToFile(String fileDirectory, int n) {
 		try {
-			File file = new File(fileDirectory + "\\" + "n_" + n
+			File file = new File(fileDirectory + "\\songName_" + songName + "_n_" + n
 					+ "_instrument_" + this.instrument + "_genre_" + this.genre
 					+ "_key_" + this.key + ".txt");
 
 			BufferedWriter output = new BufferedWriter(new FileWriter(file,
 					true));
 			for (int i = n; i < notes.size(); i++) {
-				Ngram ngram = new Ngram(instrument,
+				Ngram ngram = new Ngram(songName,instrument,
 						(ArrayList<Note>) notes.subList(i - n, i), key, tempo,
 						genre);
 				output.write(ngram.toString());
