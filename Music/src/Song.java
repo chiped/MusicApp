@@ -3,7 +3,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 
 public class Song {
 	private String songName;
@@ -12,6 +23,11 @@ public class Song {
 	private ArrayList<String> key;
 	private int tempo;
 	private String genre;
+
+	public static final int NOTE_ON = 0x90;
+	public static final int NOTE_OFF = 0x80;
+	public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
 
 	public Song() {
 		notes = new ArrayList<Note>();
@@ -87,9 +103,61 @@ public class Song {
 				+ ";genre=" + genre + ")";
 	}
 
-	public static Song makeSongFromMidiFile(File midi) {
-		// TODO
-		return null;
+	public static ArrayList<Song> makeSongFromMidiFile(File midi) throws InvalidMidiDataException, IOException {
+		ArrayList<Song> songs = new ArrayList<Song>();
+		Sequence sequence = MidiSystem.getSequence(midi);
+		int ppq = sequence.getResolution();
+		System.out.println("PPQ: " + ppq );
+		int trackNumber = 0;
+		for (Track track :  sequence.getTracks()) {
+			Song song = new Song();
+			int tempo = 120; //in BPM. This is the default value
+			double timeFactor = 60000.0/(tempo*ppq); //update this while updating tempo
+			trackNumber++;
+			System.out.println("Track " + trackNumber + ": size = " + track.size());
+			System.out.println();
+			HashMap<Integer, Long> map = new HashMap<Integer, Long>();
+			for (int i=0; i < track.size(); i++) { 
+				MidiEvent event = track.get(i);
+				long tick = event.getTick();
+				System.out.print("@" + tick + " ");
+				MidiMessage message = event.getMessage();
+				if (message instanceof ShortMessage) {
+					ShortMessage sm = (ShortMessage) message;
+					System.out.print("Channel: " + sm.getChannel() + " ");
+					int key = sm.getData1();
+					int octave = (key / 12)-1;
+					int note = key % 12;
+					String noteName = NOTE_NAMES[note];
+					int velocity = sm.getData2();
+					if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
+						long tickDuration = tick-map.get(key);
+						Note newNote = new Note(tickDuration * timeFactor, key, map.get(key) );
+						song.addNote(newNote);
+						System.out.print("Lasted for: " + ( tickDuration * timeFactor ) + "ms ");
+						System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+					} else if (sm.getCommand() == NOTE_ON) {
+						System.out.print("Started at: " + ( tick * timeFactor ) + "ms ");
+						System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+						map.put(key, tick);
+					} else {
+						System.out.println("Command:" + sm.getCommand());
+					}
+				} else {
+					if(message instanceof MetaMessage && ((MetaMessage)message).getType() == 0x51 ) {
+							System.out.println("Tempo changed");
+							//TODO update tempo
+					}
+					else;
+						System.out.println("Other message: " + message.getClass());
+				}
+			}
+			song.setTempo(tempo);
+			if(song.getNotes().size() > 0)
+				songs.add(song);
+			//System.out.println();
+		}
+		return songs;
 	}
 
 	public void writeToFile(String fileDirectory) {
@@ -159,13 +227,13 @@ public class Song {
 			System.exit(1);
 			return null;
 		}
-		
+
 	}
 	public static ArrayList<Song> makeSongsFromDirectory(String fileDirectory) {
 
 		try {
 			ArrayList<Song> songs = new ArrayList<Song>();
-			
+
 			File songDirectory = new File(fileDirectory);
 			File[] songList =songDirectory.listFiles();
 			for(File file: songList){
@@ -176,7 +244,7 @@ public class Song {
 				}
 			}
 			return songs;
-			
+
 		} catch (Exception e) {
 			System.out.println("song failed to read from file");
 			System.exit(1);

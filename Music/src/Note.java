@@ -2,15 +2,15 @@ public class Note{
 	/**
 	 * 
 	 */
-	private int arrivalTime;
+	private double arrivalTime;
 	private double duration;
 	private int pitch;
-	public Note(double duration, int pitch, int arrivalTime){
+	public Note(double duration, int pitch, double arrivalTime){
 		this.duration  = duration;
 		this.pitch = pitch;
 		this.arrivalTime = arrivalTime;
 	}
-	public int getArrivalTime() {
+	public double getArrivalTime() {
 		return arrivalTime;
 	}
 	public double getDuration() {
@@ -24,6 +24,12 @@ public class Note{
 	}
 	public void setPitch(int pitch) {
 		this.pitch = pitch;
+	}
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Note && ((Note)other).getPitch() == pitch)
+			return true;
+		return false;
 	}
 	@Override
 	public String toString() {
