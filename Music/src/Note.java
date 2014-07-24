@@ -3,9 +3,9 @@ public class Note{
 	 * 
 	 */
 	private int arrivalTime;
-	private int duration;
+	private double duration;
 	private int pitch;
-	public Note(int duration, int pitch, int arrivalTime){
+	public Note(double duration, int pitch, int arrivalTime){
 		this.duration  = duration;
 		this.pitch = pitch;
 		this.arrivalTime = arrivalTime;
@@ -13,7 +13,7 @@ public class Note{
 	public int getArrivalTime() {
 		return arrivalTime;
 	}
-	public int getDuration() {
+	public double getDuration() {
 		return duration;
 	}
 	public void setDuration(int duration) {
@@ -43,7 +43,7 @@ public class Note{
 		String pitchString = noteVariables[1].replace("pitch=","");
 		String arrivalTimeString = noteVariables[2].replace("arrivalTime=","");
 		
-		int duration = Integer.parseInt(durationString);
+		double duration = Double.parseDouble(durationString);
 		int pitch = Integer.parseInt(pitchString);
 		int arrivalTime = Integer.parseInt(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
