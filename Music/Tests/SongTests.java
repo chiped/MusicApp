@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-public class readAndWriteStringTests {
+public class SongTests {
 
 	@Test
 	public void noteToStringTest() {
@@ -93,7 +93,7 @@ public class readAndWriteStringTests {
 	
 		assertEquals(s1String, Song.makeSongFromString(s1StringTest).toString());
 	}
-	@Test
+	//@Test
 	public void readAndWriteSongToFileTest(){
 		String directory = "C:\\Users\\Matthew\\Desktop";
 		Note n1 = new Note(0, 0, 0);
