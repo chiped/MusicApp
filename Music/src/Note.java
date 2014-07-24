@@ -39,17 +39,12 @@ public class Note{
 		aNoteString = aNoteString.replace("}", "");
 		
 		String[] noteVariables = aNoteString.split(":");	
-		for(String n: noteVariables){
-			System.out.println(n);
-		}
-
 		String durationString = noteVariables[0].replace("duration=","");
 		String pitchString = noteVariables[1].replace("pitch=","");
 		String arrivalTimeString = noteVariables[2].replace("arrivalTime=","");
 		
 		int duration = Integer.parseInt(durationString);
 		int pitch = Integer.parseInt(pitchString);
-		System.out.println(arrivalTimeString);
 		int arrivalTime = Integer.parseInt(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
 	}

@@ -61,7 +61,6 @@ public class readAndWriteStringTests {
 		
 		String s1StringTest = "Song (songName=Worst Of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
 		String s1String = s1.toString();
-		System.out.println(s1String);
 		assertEquals(s1StringTest, s1String);	
 	}
 	@Test
@@ -93,6 +92,43 @@ public class readAndWriteStringTests {
 		String s1String = s1.toString();
 	
 		assertEquals(s1String, Song.makeSongFromString(s1StringTest).toString());
+	}
+	@Test
+	public void readAndWriteSongToFileTest(){
+		String directory = "C:\\Users\\Matthew\\Desktop";
+		Note n1 = new Note(0, 0, 0);
+		Note n2 = new Note(1, 1, 1);
+		Note n3 = new Note(2, 2, 2);
+		
+		Song s1 = new Song();
+		
+		ArrayList<String> key = new ArrayList<String>();
+		key.add("A");
+		key.add("B");
+		key.add("C#");
+		
+		s1.addNote(n1);
+		s1.addNote(n2);
+		s1.addNote(n3);
+		s1.setSongName("Worst of Lullabies");
+		s1.setGenre("Rock and Roll");
+		s1.setInstrument("Guitar");
+		s1.setKey(key);
+		
+		s1.setTempo(30);
+		
+		s1.writeToFile(directory);
+		Song s2 = Song.makeSongFromFile(directory +"\\song_Worst Of Lullabies.txt");
+		
+		assertEquals(s1.toString(), s2.toString());
+		
+		ArrayList<Song> testSongs = Song.makeSongsFromDirectory(directory);
+		Song s3 = testSongs.get(0);
+		assertEquals(s1.toString(), s3.toString());
+		
+		
+		
+		
 	}
 
 }
