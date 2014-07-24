@@ -27,7 +27,7 @@ public class Note{
 	}
 	@Override
 	public String toString() {
-		return "Note {duration=" + duration + ": pitch=" + pitch + ": arrivalTime=" + arrivalTime + "}";
+		return "Note {duration=" + duration + ":pitch=" + pitch + ":arrivalTime=" + arrivalTime + "}";
 	}
 	/**
 	 * Takes string representation of a note {@link #toString()} and converts it to a Note
@@ -38,13 +38,18 @@ public class Note{
 		aNoteString = aNoteString.replace("Note {", "");
 		aNoteString = aNoteString.replace("}", "");
 		
-		String[] noteVariables = aNoteString.split(": ");
+		String[] noteVariables = aNoteString.split(":");	
+		for(String n: noteVariables){
+			System.out.println(n);
+		}
+
 		String durationString = noteVariables[0].replace("duration=","");
 		String pitchString = noteVariables[1].replace("pitch=","");
-		String arrivalTimeString = noteVariables[1].replace("arrivalTime=","");
+		String arrivalTimeString = noteVariables[2].replace("arrivalTime=","");
 		
 		int duration = Integer.parseInt(durationString);
 		int pitch = Integer.parseInt(pitchString);
+		System.out.println(arrivalTimeString);
 		int arrivalTime = Integer.parseInt(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
 	}

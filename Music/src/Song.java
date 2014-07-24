@@ -72,8 +72,8 @@ public class Song {
 
 	@Override
 	public String toString() {
-		return "Song (instrument=" + instrument + "; notes=" + notes + "; key="
-				+ key + "; tempo=" + tempo + "; genre=" + genre + ")";
+		return "Song (instrument=" + instrument + ";notes=" + notes + ";key="
+				+ key + ";tempo=" + tempo + ";genre=" + genre + ")";
 	}
 
 	public static Song makeSongFromMidiFile(File midi) {
@@ -99,7 +99,7 @@ public class Song {
 	public static Song makeSongFromString(String aSongString) {
 		aSongString = aSongString.replace("Song (", "");
 		aSongString = aSongString.replace(")", "");
-		String[] songVariables = aSongString.split("; ");
+		String[] songVariables = aSongString.split(";");
 
 		String instrument = songVariables[0].replace("instrument=", "");
 		String notesString = songVariables[1].replace("notes=", "");
