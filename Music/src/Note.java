@@ -51,7 +51,7 @@ public class Note{
 		
 		double duration = Double.parseDouble(durationString);
 		int pitch = Integer.parseInt(pitchString);
-		int arrivalTime = Integer.parseInt(arrivalTimeString);
+		double arrivalTime = Double.parseDouble(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
 	}
 }

@@ -16,9 +16,9 @@ public class SongTests {
 		String n2String = n2.toString();
 		String n3String = n3.toString();
 
-		assertEquals("Note {duration=0.0:pitch=0:arrivalTime=0}", n1String);
-		assertEquals("Note {duration=1.0:pitch=1:arrivalTime=1}", n2String);
-		assertEquals("Note {duration=2.0:pitch=2:arrivalTime=2}", n3String);	
+		assertEquals("Note {duration=0.0:pitch=0:arrivalTime=0.0}", n1String);
+		assertEquals("Note {duration=1.0:pitch=1:arrivalTime=1.0}", n2String);
+		assertEquals("Note {duration=2.0:pitch=2:arrivalTime=2.0}", n3String);	
 	}
 	@Test
 	public void noteFromStringTest(){
@@ -29,10 +29,9 @@ public class SongTests {
 		String n1String = n1.toString();
 		String n2String = n2.toString();
 		String n3String = n3.toString();
-
-		assertEquals("Note {duration=0.0:pitch=0:arrivalTime=0}", Note.makeNoteFromString(n1String).toString());
-		assertEquals("Note {duration=1.0:pitch=1:arrivalTime=1}", Note.makeNoteFromString(n2String).toString());
-		assertEquals("Note {duration=2.0:pitch=2:arrivalTime=2}", Note.makeNoteFromString(n3String).toString());
+		assertEquals("Note {duration=0.0:pitch=0:arrivalTime=0.0}", Note.makeNoteFromString(n1String).toString());
+		assertEquals("Note {duration=1.0:pitch=1:arrivalTime=1.0}", Note.makeNoteFromString(n2String).toString());
+		assertEquals("Note {duration=2.0:pitch=2:arrivalTime=2.0}", Note.makeNoteFromString(n3String).toString());
 	}
 	@Test
 	public void  songToStringTest(){
@@ -55,11 +54,9 @@ public class SongTests {
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
 		
-		s1.setTempo(30);
+		String notesString = "[Note {duration=0.0:pitch=0:arrivalTime=0.0}, Note {duration=1.0:pitch=1:arrivalTime=1.0}, Note {duration=2.0:pitch=2:arrivalTime=2.0}]";
 		
-		String notesString = "[Note {duration=0.0:pitch=0:arrivalTime=0}, Note {duration=1.0:pitch=1:arrivalTime=1}, Note {duration=2.0:pitch=2:arrivalTime=2}]";
-		
-		String s1StringTest = "Song (songName=Worst Of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
+		String s1StringTest = "Song (songName=Worst Of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];genre=Rock and Roll)";
 		String s1String = s1.toString();
 		assertEquals(s1StringTest, s1String);	
 	}
@@ -84,11 +81,9 @@ public class SongTests {
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
 		
-		s1.setTempo(30);
+		String notesString = "[Note {duration=0:pitch=0:arrivalTime=0.0}, Note {duration=1:pitch=1:arrivalTime=1.0}, Note {duration=2:pitch=2:arrivalTime=2.0}]";
 		
-		String notesString = "[Note {duration=0:pitch=0:arrivalTime=0}, Note {duration=1:pitch=1:arrivalTime=1}, Note {duration=2:pitch=2:arrivalTime=2}]";
-		
-		String s1StringTest = "Song (songName=Worst of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];tempo=30;genre=Rock and Roll)";
+		String s1StringTest = "Song (songName=Worst of Lullabies;instrument=Guitar;notes=" + notesString + ";key=[A, B, C#];genre=Rock and Roll)";
 		String s1String = s1.toString();
 	
 		assertEquals(s1String, Song.makeSongFromString(s1StringTest).toString());
@@ -114,8 +109,6 @@ public class SongTests {
 		s1.setGenre("Rock and Roll");
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
-		
-		s1.setTempo(30);
 		
 		s1.writeToFile(directory);
 		Song s2 = Song.makeSongFromFile(directory +"\\song_Worst Of Lullabies.txt");

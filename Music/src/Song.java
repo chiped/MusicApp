@@ -21,13 +21,7 @@ public class Song {
 	private String instrument;
 	private ArrayList<Note> notes;
 	private ArrayList<String> key;
-	private int tempo;
 	private String genre;
-
-	public static final int NOTE_ON = 0x90;
-	public static final int NOTE_OFF = 0x80;
-	public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-
 
 	public Song() {
 		notes = new ArrayList<Note>();
@@ -35,12 +29,11 @@ public class Song {
 	}
 
 	protected Song(String songName, String instrument, ArrayList<Note> notes,
-			ArrayList<String> key, int tempo, String genre) {
+			ArrayList<String> key, String genre) {
 		this.songName = songName;
 		this.instrument = instrument;
 		this.notes = new ArrayList<Note>(notes);
 		this.key = new ArrayList<String>(key);
-		this.tempo = tempo;
 		this.genre = genre;
 	}
 
@@ -80,14 +73,6 @@ public class Song {
 		this.key = key;
 	}
 
-	public int getTempo() {
-		return tempo;
-	}
-
-	public void setTempo(int tempo) {
-		this.tempo = tempo;
-	}
-
 	public String getGenre() {
 		return genre;
 	}
@@ -99,63 +84,57 @@ public class Song {
 	@Override
 	public String toString() {
 		return "Song (songName=" + songName + ";instrument=" + instrument
-				+ ";notes=" + notes + ";key=" + key + ";tempo=" + tempo
+				+ ";notes=" + notes + ";key=" + key
 				+ ";genre=" + genre + ")";
 	}
 
-	public static ArrayList<Song> makeSongFromMidiFile(File midi) throws InvalidMidiDataException, IOException {
+	public static ArrayList<Song> makeSongFromMidiFile(File midi)
+			throws InvalidMidiDataException, IOException {
+		int NOTE_ON = 0x90;
+		int NOTE_OFF = 0x80;
+
 		ArrayList<Song> songs = new ArrayList<Song>();
 		Sequence sequence = MidiSystem.getSequence(midi);
 		int ppq = sequence.getResolution();
-		System.out.println("PPQ: " + ppq );
 		int trackNumber = 0;
-		for (Track track :  sequence.getTracks()) {
+		for (Track track : sequence.getTracks()) {
+
 			Song song = new Song();
-			int tempo = 120; //in BPM. This is the default value
-			double timeFactor = 60000.0/(tempo*ppq); //update this while updating tempo
+															// updating tempo
 			trackNumber++;
-			System.out.println("Track " + trackNumber + ": size = " + track.size());
+			System.out.println("Track " + trackNumber + ": size = "
+					+ track.size());
 			System.out.println();
 			HashMap<Integer, Long> map = new HashMap<Integer, Long>();
-			for (int i=0; i < track.size(); i++) { 
+			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
-				long tick = event.getTick();
-				System.out.print("@" + tick + " ");
+				double tick = event.getTick();
+				
 				MidiMessage message = event.getMessage();
+
 				if (message instanceof ShortMessage) {
 					ShortMessage sm = (ShortMessage) message;
-					System.out.print("Channel: " + sm.getChannel() + " ");
-					int key = sm.getData1();
-					int octave = (key / 12)-1;
-					int note = key % 12;
-					String noteName = NOTE_NAMES[note];
+					int pitch = sm.getData1();
+
 					int velocity = sm.getData2();
-					if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
-						long tickDuration = tick-map.get(key);
-						Note newNote = new Note(tickDuration * timeFactor, key, map.get(key) );
+					if (sm.getCommand() == NOTE_OFF
+							|| (sm.getCommand() == NOTE_ON && velocity == 0)) {
+						double tickDuration = (tick - map.get(pitch)
+								.doubleValue()) / ppq;
+						double arrivalTime = map.get(pitch).doubleValue() / ppq;
+						Note newNote = new Note(tickDuration, pitch,
+								arrivalTime);
 						song.addNote(newNote);
-						System.out.print("Lasted for: " + ( tickDuration * timeFactor ) + "ms ");
-						System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+
 					} else if (sm.getCommand() == NOTE_ON) {
-						System.out.print("Started at: " + ( tick * timeFactor ) + "ms ");
-						System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-						map.put(key, tick);
-					} else {
-						System.out.println("Command:" + sm.getCommand());
-					}
-				} else {
-					if(message instanceof MetaMessage && ((MetaMessage)message).getType() == 0x51 ) {
-							System.out.println("Tempo changed");
-							//TODO update tempo
-					}
-					else;
-						System.out.println("Other message: " + message.getClass());
+						map.put(pitch, (long) tick);
+					} 
 				}
 			}
-			song.setTempo(tempo);
-			if(song.getNotes().size() > 0)
+			
+			if (song.getNotes().size() > 0){
 				songs.add(song);
-			//System.out.println();
+			}
 		}
 		return songs;
 	}
@@ -184,8 +163,7 @@ public class Song {
 		String instrument = songVariables[1].replace("instrument=", "");
 		String notesString = songVariables[2].replace("notes=", "");
 		String keyString = songVariables[3].replace("key=", "");
-		String tempoString = songVariables[4].replace("tempo=", "");
-		String genre = songVariables[5].replace("genre=", "");
+		String genre = songVariables[4].replace("genre=", "");
 
 		ArrayList<Note> notes = new ArrayList<Note>();
 		notesString = notesString.replace("[", "");
@@ -203,12 +181,11 @@ public class Song {
 			key.add(note);
 		}
 
-		int tempo = Integer.parseInt(tempoString);
 
-		return new Song(songName, instrument, notes, key, tempo, genre);
+		return new Song(songName, instrument, notes, key, genre);
 	}
 
-	public static Song makeSongFromFile(String filePath){
+	public static Song makeSongFromFile(String filePath) {
 		try {
 			File file = new File(filePath);
 			ArrayList<Song> songs = new ArrayList<Song>();
@@ -216,10 +193,9 @@ public class Song {
 			BufferedReader inputFile = new BufferedReader(new FileReader(file));
 			String line = inputFile.readLine();
 			inputFile.close();
-			if(line != null){
+			if (line != null) {
 				return makeSongFromString(line.replace("\n", ""));
-			}
-			else{
+			} else {
 				return null;
 			}
 		} catch (Exception e) {
@@ -229,16 +205,17 @@ public class Song {
 		}
 
 	}
+
 	public static ArrayList<Song> makeSongsFromDirectory(String fileDirectory) {
 
 		try {
 			ArrayList<Song> songs = new ArrayList<Song>();
 
 			File songDirectory = new File(fileDirectory);
-			File[] songList =songDirectory.listFiles();
-			for(File file: songList){
+			File[] songList = songDirectory.listFiles();
+			for (File file : songList) {
 				String path = file.getAbsolutePath();
-				if(path.replace(fileDirectory,"").startsWith("\\song_")){
+				if (path.replace(fileDirectory, "").startsWith("\\song_")) {
 					Song song = Song.makeSongFromFile(path);
 					songs.add(song);
 				}
@@ -256,13 +233,13 @@ public class Song {
 	public void writeNGramsToFile(String fileDirectory, int n) {
 		try {
 			File file = new File(fileDirectory + "\\gram_" + n + "_songName_"
-					+ this.songName + "_instrument_" + this.instrument + "_genre_"
-					+ this.genre + "_key_" + this.key + ".txt");
+					+ this.songName + "_instrument_" + this.instrument
+					+ "_genre_" + this.genre + "_key_" + this.key + ".txt");
 
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			for (int i = n; i < notes.size(); i++) {
 				Ngram ngram = new Ngram(songName, instrument,
-						(ArrayList<Note>) notes.subList(i - n, i), key, tempo,
+						(ArrayList<Note>) notes.subList(i - n, i), key,
 						genre);
 				output.write(ngram.toString());
 			}
