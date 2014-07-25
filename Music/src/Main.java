@@ -5,28 +5,26 @@ import java.util.ArrayList;
 import javax.sound.midi.InvalidMidiDataException;
 
 public class Main {
-	
+
 	public static void main(String[] args) {
 
-		
-		File midiDirectory = new File("Music\\src");
-		
-		
-		File[] midiList = midiDirectory.listFiles();
-		for(File file: midiList){
-			if(file.getAbsolutePath().endsWith(".mid")){
-				try {
-					ArrayList<Song> songs = Song.makeSongFromMidiFile(file);
-					for(Song song: songs)
-						System.out.println(song);
-					System.out.println(songs.size() + " songs in file " + file);
-				} catch (InvalidMidiDataException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		File midi = new File("C:\\Users\\Matthew\\Desktop\\midiTest3.mid");
+
+		try {
+			ArrayList<Song> songs = Song.makeSongFromMidiFile(midi);
+			for (Song song : songs){
+				Song s1 = song;
+				for(Note n : s1.getNotes()){
+					System.out.println(n);
 				}
 				
 			}
+
+		} catch (InvalidMidiDataException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+
 	}
+
 }
