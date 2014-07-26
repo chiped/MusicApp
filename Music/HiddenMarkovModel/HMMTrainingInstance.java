@@ -26,5 +26,6 @@ public abstract class HMMTrainingInstance<S,V> {
 	public void setNextInstance(HMMTrainingInstance<S,V> next){
 		this.nextInstance = next;
 	}
+
 	
 }
