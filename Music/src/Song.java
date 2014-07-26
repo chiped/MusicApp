@@ -88,6 +88,13 @@ public class Song {
 				+ ";genre=" + genre + ")";
 	}
 
+	/**
+	 * 
+	 * @param midi midi file
+	 * @return an array of songs
+	 * @throws InvalidMidiDataException
+	 * @throws IOException
+	 */
 	public static ArrayList<Song> makeSongFromMidiFile(File midi)
 			throws InvalidMidiDataException, IOException {
 		int NOTE_ON = 0x90;
