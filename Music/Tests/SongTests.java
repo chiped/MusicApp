@@ -1,6 +1,8 @@
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import org.junit.Test;
 
@@ -41,7 +43,7 @@ public class SongTests {
 		
 		Song s1 = new Song();
 		
-		ArrayList<String> key = new ArrayList<String>();
+		LinkedHashSet<String> key = new LinkedHashSet<String>();
 		key.add("A");
 		key.add("B");
 		key.add("C#");
@@ -68,7 +70,7 @@ public class SongTests {
 		
 		Song s1 = new Song();
 		
-		ArrayList<String> key = new ArrayList<String>();
+		HashSet<String> key = new HashSet<String>();
 		key.add("A");
 		key.add("B");
 		key.add("C#");
@@ -97,7 +99,7 @@ public class SongTests {
 		
 		Song s1 = new Song();
 		
-		ArrayList<String> key = new ArrayList<String>();
+		HashSet<String> key = new HashSet<String>();
 		key.add("A");
 		key.add("B");
 		key.add("C#");
