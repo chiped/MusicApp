@@ -139,10 +139,7 @@ public class Song {
 						double duration = tick - arrivalTime;
 						if(duration > 0) {
 							double tickDuration = duration / ppq;
-							ArrayList<Integer> pitches = new ArrayList<Integer>();
-							for(Integer each : currentPitches) {
-								pitches.add(each);
-							}
+							ArrayList<Integer> pitches = new ArrayList<Integer>(currentPitches);
 							song.addNote(new Note(tickDuration, pitches, (double)arrivalTime/ppq));
 						}
 						arrivalTime = tick;
@@ -153,10 +150,7 @@ public class Song {
 							double duration = tick - arrivalTime;
 							if(duration > 0) {
 								double tickDuration = duration / ppq;
-								ArrayList<Integer> pitches = new ArrayList<Integer>();
-								for(Integer each : currentPitches) {
-									pitches.add(each);
-								}
+								ArrayList<Integer> pitches = new ArrayList<Integer>(currentPitches);
 								song.addNote(new Note(tickDuration, pitches, (double)arrivalTime/ppq));
 							}
 						}
@@ -272,7 +266,7 @@ public class Song {
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			for (int i = n; i < notes.size(); i++) {
 				Ngram ngram = new Ngram(songName, instrument,
-						(ArrayList<Note>) notes.subList(i - n, i), key,
+						new ArrayList<Note>( notes.subList(i - n, i) ), key,
 						genre);
 				output.write(ngram.toString());
 			}
@@ -282,6 +276,25 @@ public class Song {
 			System.exit(1);
 		}
 
+	}
+	
+	public ArrayList<Ngram> getNGrams(int n) {
+		ArrayList<Ngram> nGrams = new ArrayList<Ngram>();
+		for (int i = n; i < notes.size(); i++) {
+			Ngram ngram = new Ngram(songName, instrument,
+					new ArrayList<Note>( notes.subList(i - n, i)), key,
+					genre);
+			nGrams.add(ngram);
+		}
+		return nGrams;
+	}
+	
+	public double getDuration() {
+		double duration = 0;
+		for(Note note : getNotes()) {
+			duration += note.getDuration();
+		}
+		return duration;
 	}
 	
 	public void play() {

@@ -17,9 +17,18 @@ public class Main {
 				for(Note n : s1.getNotes()){
 					System.out.println(n);
 				}
-				
+				ArrayList<Ngram> nGrams = s1.getNGrams(3);
+				HMMTrainingInstance<Ngram, Double> previous = new HMMTrainingInstance<Ngram, Double>(nGrams.get(0), nGrams.get(0).getDuration());
+				for(int i=1; i<nGrams.size(); i++) {
+					Ngram nGram = nGrams.get(i);
+					HMMTrainingInstance<Ngram, Double> instance = new HMMTrainingInstance<Ngram, Double>(nGram, nGram.getDuration());
+					previous.setNextInstance(instance);
+					previous = instance;
+					System.out.println(instance);
+				}
+
 			}
-			songs.get(1).play();
+//			songs.get(0).play();
 		} catch (InvalidMidiDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
