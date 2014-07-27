@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
@@ -20,20 +21,20 @@ public class Song {
 	private String songName;
 	private String instrument;
 	private ArrayList<Note> notes;
-	private ArrayList<String> key;
+	private HashSet<String> key;
 	private String genre;
-
+	
 	public Song() {
 		notes = new ArrayList<Note>();
-		key = new ArrayList<String>();
+		key = new HashSet<String>();
 	}
 
 	protected Song(String songName, String instrument, ArrayList<Note> notes,
-			ArrayList<String> key, String genre) {
+			HashSet<String> key, String genre) {
 		this.songName = songName;
 		this.instrument = instrument;
 		this.notes = new ArrayList<Note>(notes);
-		this.key = new ArrayList<String>(key);
+		this.key = new HashSet<String>(key);
 		this.genre = genre;
 	}
 
@@ -65,11 +66,11 @@ public class Song {
 		this.notes.add(newNote);
 	}
 
-	public ArrayList<String> getKey() {
+	public HashSet<String> getKey() {
 		return key;
 	}
 
-	public void setKey(ArrayList<String> key) {
+	public void setKey(HashSet<String> key) {
 		this.key = key;
 	}
 
@@ -99,6 +100,9 @@ public class Song {
 			throws InvalidMidiDataException, IOException {
 		int NOTE_ON = 0x90;
 		int NOTE_OFF = 0x80;
+		String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
+
 
 		ArrayList<Song> songs = new ArrayList<Song>();
 		Sequence sequence = MidiSystem.getSequence(midi);
@@ -122,7 +126,7 @@ public class Song {
 				if (message instanceof ShortMessage) {
 					ShortMessage sm = (ShortMessage) message;
 					int pitch = sm.getData1();
-
+					
 					int velocity = sm.getData2();
 					if (sm.getCommand() == NOTE_OFF
 							|| (sm.getCommand() == NOTE_ON && velocity == 0)) {
@@ -132,6 +136,7 @@ public class Song {
 						Note newNote = new Note(tickDuration, pitch,
 								arrivalTime);
 						song.addNote(newNote);
+						song.getKey().add(NOTE_NAMES[pitch%12]);
 
 					} else if (sm.getCommand() == NOTE_ON) {
 						map.put(pitch, (long) tick);
@@ -180,7 +185,7 @@ public class Song {
 			notes.add(Note.makeNoteFromString(noteString));
 		}
 
-		ArrayList<String> key = new ArrayList<String>();
+		HashSet<String> key = new HashSet<String>();
 		keyString = keyString.replace("[", "");
 		keyString = keyString.replace("]", "");
 		String[] keyStringArray = keyString.split(", ");
