@@ -4,17 +4,17 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class HMM<State, Observation> {
-	private TreeSet<State> states;
-	private TreeSet<Observation> observations;
-	private TreeMap<State, TreeMap<State, Double>> transitionProbabilities;
-	private TreeMap<State, TreeMap<Observation, Double>> observationProbabilities;
+public class HMM<T1, T2> {
+	private TreeSet<T1> states;
+	private TreeSet<T2> observations;
+	private TreeMap<T1, TreeMap<T1, Double>> transitionProbabilities;
+	private TreeMap<T1, TreeMap<T2, Double>> observationProbabilities;
 
-	public HMM(ArrayList<HMMTrainingInstance<State, Observation>> instances) {
-		states = new TreeSet<State>();
-		observations = new TreeSet<Observation>();
+	public HMM(ArrayList<HMMTrainingInstance<T1, T2>> instances) {
+		states = new TreeSet<T1>();
+		observations = new TreeSet<T2>();
 
-		for (HMMTrainingInstance<State, Observation> instance : instances) {
+		for (HMMTrainingInstance<T1, T2> instance : instances) {
 			if (states.contains(instance.getState()) == false) {
 				states.add(instance.getState());
 			}
@@ -24,26 +24,26 @@ public class HMM<State, Observation> {
 		}
 
 		// initialize the mapping
-		transitionProbabilities = new TreeMap<State, TreeMap<State, Double>>();
-		observationProbabilities = new TreeMap<State, TreeMap<Observation, Double>>();
-		for (State state : states) {
-			transitionProbabilities.put(state, new TreeMap<State, Double>());
-			observationProbabilities.put(state, new TreeMap<Observation, Double>());
+		transitionProbabilities = new TreeMap<T1, TreeMap<T1, Double>>();
+		observationProbabilities = new TreeMap<T1, TreeMap<T2, Double>>();
+		for (T1 state : states) {
+			transitionProbabilities.put(state, new TreeMap<T1, Double>());
+			observationProbabilities.put(state, new TreeMap<T2, Double>());
 		}
 
 		// calculate the counts
-		for (HMMTrainingInstance<State, Observation> instance : instances) {
+		for (HMMTrainingInstance<T1, T2> instance : instances) {
 
-			State state = instance.getState();
-			Observation observation = instance.getObservation();
-			State nextState = null;
+			T1 state = instance.getState();
+			T2 observation = instance.getObservation();
+			T1 nextState = null;
 			if (instance.getNextInstance() != null) {
 				nextState = instance.getNextInstance().getState();
 			}
 
-			TreeMap<State, Double> statesTransitionProbabilities = transitionProbabilities
+			TreeMap<T1, Double> statesTransitionProbabilities = transitionProbabilities
 					.get(state);
-			TreeMap<Observation, Double> statesObservationProbabilities = observationProbabilities
+			TreeMap<T2, Double> statesObservationProbabilities = observationProbabilities
 					.get(state);
 
 			if (nextState != null) {
@@ -64,23 +64,23 @@ public class HMM<State, Observation> {
 
 		// convert counts into probabilities
 
-		for (State state : states) {
-			TreeMap<State, Double> stateTransitionProbabilities = transitionProbabilities
+		for (T1 state : states) {
+			TreeMap<T1, Double> stateTransitionProbabilities = transitionProbabilities
 					.get(state);
-			TreeMap<Observation, Double> stateObservationProbabilities = observationProbabilities
+			TreeMap<T2, Double> stateObservationProbabilities = observationProbabilities
 					.get(state);
 			double sum = 0;
 
-			for (Entry<State, Double> entry : stateTransitionProbabilities
+			for (Entry<T1, Double> entry : stateTransitionProbabilities
 					.entrySet()) {
 				sum += entry.getValue();
 
 			}
 			
 			if (sum != 0) {
-				for (Entry<State, Double> entry : stateTransitionProbabilities
+				for (Entry<T1, Double> entry : stateTransitionProbabilities
 						.entrySet()) {
-					State key = entry.getKey();
+					T1 key = entry.getKey();
 					double value = entry.getValue() / sum;
 					stateTransitionProbabilities.put(key, value);
 				}
@@ -88,15 +88,15 @@ public class HMM<State, Observation> {
 			
 			
 			sum = 0;
-			for (Entry<Observation, Double> entry : stateObservationProbabilities
+			for (Entry<T2, Double> entry : stateObservationProbabilities
 					.entrySet()) {
 				sum += entry.getValue();
 
 			}
 			if (sum != 0) {
-				for (Entry<Observation, Double> entry : stateObservationProbabilities
+				for (Entry<T2, Double> entry : stateObservationProbabilities
 						.entrySet()) {
-					Observation key = entry.getKey();
+					T2 key = entry.getKey();
 					double value = entry.getValue() / sum;
 					stateObservationProbabilities.put(key, value);
 				}
@@ -106,37 +106,37 @@ public class HMM<State, Observation> {
 
 	}
 
-	public TreeSet<State> getStates() {
+	public TreeSet<T1> getStates() {
 		return states;
 	}
 
-	public void setStates(TreeSet<State> states) {
+	public void setStates(TreeSet<T1> states) {
 		this.states = states;
 	}
 
-	public TreeSet<Observation> getObservations() {
+	public TreeSet<T2> getObservations() {
 		return observations;
 	}
 
-	public void setObservations(TreeSet<Observation> observations) {
+	public void setObservations(TreeSet<T2> observations) {
 		this.observations = observations;
 	}
 
-	public TreeMap<State, TreeMap<State, Double>> getTransitionProbabilities() {
+	public TreeMap<T1, TreeMap<T1, Double>> getTransitionProbabilities() {
 		return transitionProbabilities;
 	}
 
 	public void setTransitionProbabilities(
-			TreeMap<State, TreeMap<State, Double>> transitionProbabilities) {
+			TreeMap<T1, TreeMap<T1, Double>> transitionProbabilities) {
 		this.transitionProbabilities = transitionProbabilities;
 	}
 
-	public TreeMap<State, TreeMap<Observation, Double>> getObservationProbabilities() {
+	public TreeMap<T1, TreeMap<T2, Double>> getObservationProbabilities() {
 		return observationProbabilities;
 	}
 
 	public void setObservationProbabilities(
-			TreeMap<State, TreeMap<Observation, Double>> observationProbabilities) {
+			TreeMap<T1, TreeMap<T2, Double>> observationProbabilities) {
 		this.observationProbabilities = observationProbabilities;
 	}
 }
