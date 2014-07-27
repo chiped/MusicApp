@@ -27,5 +27,8 @@ public class HMMTrainingInstance<S,O> {
 		this.nextInstance = next;
 	}
 
+	public String toString(){
+		return "State: " + this.state + ", Observation: " + this.observation;
+	}
 	
 }
