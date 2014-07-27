@@ -9,13 +9,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.sound.midi.Instrument;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Track;
 
 public class Song {
@@ -107,7 +112,8 @@ public class Song {
 
 		ArrayList<Song> songs = new ArrayList<Song>();
 		Sequence sequence = MidiSystem.getSequence(midi);
-		int ppq = sequence.getResolution();
+		
+		int ppq = 1;//sequence.getResolution();
 		int trackNumber = 0;
 		for (Track track : sequence.getTracks()) {
 			Song song = new Song();
@@ -116,10 +122,11 @@ public class Song {
 			System.out.println("Track " + trackNumber + ": size = "
 					+ track.size());
 			System.out.println();
-			HashMap<Integer, Long> map = new HashMap<Integer, Long>();
+			HashSet<Integer> currentPitches = new HashSet<Integer>();
+			long arrivalTime = 0;
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
-				double tick = event.getTick();
+				long tick = event.getTick();
 				
 				MidiMessage message = event.getMessage();
 
@@ -128,21 +135,33 @@ public class Song {
 					int pitch = sm.getData1();
 					
 					int velocity = sm.getData2();
-					if (sm.getCommand() == NOTE_OFF
-							|| (sm.getCommand() == NOTE_ON && velocity == 0)) {
-						double tickDuration = (tick - map.get(pitch)
-								.doubleValue()) / ppq;
-						double arrivalTime = map.get(pitch).doubleValue() / ppq;
-						ArrayList<Integer> pitchList = new ArrayList<Integer>();
-						for(Integer each : map.keySet())
-							pitchList.add(each);
-						Note newNote = new Note(tickDuration, pitchList, arrivalTime);
-						song.addNote(newNote);
+					if (sm.getCommand() == NOTE_OFF	|| (sm.getCommand() == NOTE_ON && velocity == 0)) {
+						double duration = tick - arrivalTime;
+						if(duration > 0) {
+							double tickDuration = duration / ppq;
+							ArrayList<Integer> pitches = new ArrayList<Integer>();
+							for(Integer each : currentPitches) {
+								pitches.add(each);
+							}
+							song.addNote(new Note(tickDuration, pitches, (double)arrivalTime/ppq));
+						}
+						arrivalTime = tick;
+						currentPitches.remove(pitch);
 						song.getKey().add(NOTE_NAMES[pitch%12]);
-						map.remove(pitch);
-
 					} else if (sm.getCommand() == NOTE_ON) {
-						map.put(pitch, (long) tick);
+						if(!currentPitches.isEmpty()) {
+							double duration = tick - arrivalTime;
+							if(duration > 0) {
+								double tickDuration = duration / ppq;
+								ArrayList<Integer> pitches = new ArrayList<Integer>();
+								for(Integer each : currentPitches) {
+									pitches.add(each);
+								}
+								song.addNote(new Note(tickDuration, pitches, (double)arrivalTime/ppq));
+							}
+						}
+						arrivalTime = tick;
+						currentPitches.add(pitch);
 					} 
 				}
 			}
@@ -263,5 +282,26 @@ public class Song {
 			System.exit(1);
 		}
 
+	}
+	
+	public void play() {
+		try {
+			Synthesizer synth = MidiSystem.getSynthesizer();
+			synth.open();
+			final MidiChannel[] mc = synth.getChannels();
+			Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
+			synth.loadInstrument(instr[80]);
+			for(Note n:getNotes()) {
+				for(int pitch : n.getPitch()) {
+					mc[0].noteOn(pitch,75);
+				}
+				try {
+					Thread.sleep(Math.round(n.getDuration()*2.5));
+				} catch (InterruptedException e) {}
+				for(int pitch : n.getPitch()) {
+					mc[0].noteOff(pitch);
+				}
+			}
+		} catch (MidiUnavailableException e) {}
 	}
 }

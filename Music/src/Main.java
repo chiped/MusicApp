@@ -19,7 +19,7 @@ public class Main {
 				}
 				
 			}
-
+			songs.get(1).play();
 		} catch (InvalidMidiDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
