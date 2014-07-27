@@ -9,7 +9,7 @@ import org.junit.Test;
 public class HMMTests {
 
 	@Test
-	public void test() {
+	public void HMMConstructorTest() {
 		
 		HMMTrainingInstance<String, String> i1 = new HMMTrainingInstance<String,String>("1","a");
 		HMMTrainingInstance<String, String> i2 = new HMMTrainingInstance<String,String>("2","b");

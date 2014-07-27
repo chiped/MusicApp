@@ -1,31 +1,34 @@
 
-public class HMMTrainingInstance<S,V> {
-	private S state;
-	private V observation;
-	private HMMTrainingInstance<S,V> nextInstance;
+public class HMMTrainingInstance<State,Observation> {
+	private State state;
+	private Observation observation;
+	private HMMTrainingInstance<State,Observation> nextInstance;
 	
-	public HMMTrainingInstance(S aState, V anObservation){
+	public HMMTrainingInstance(State aState, Observation anObservation){
 		this.state = aState;
 		this.observation = anObservation;
 	}
-	public S getState() {
+	public State getState() {
 		return state;
 	}
-	public void setState(S state) {
+	public void setState(State state) {
 		this.state = state;
 	}
-	public V getObservation() {
+	public Observation getObservation() {
 		return observation;
 	}
-	public void setObservation(V observation) {
+	public void setObservation(Observation observation) {
 		this.observation = observation;
 	}
-	public HMMTrainingInstance<S, V> getNextInstance() {
+	public HMMTrainingInstance<State, Observation> getNextInstance() {
 		return nextInstance;
 	}
-	public void setNextInstance(HMMTrainingInstance<S,V> next){
+	public void setNextInstance(HMMTrainingInstance<State,Observation> next){
 		this.nextInstance = next;
 	}
 
+	public String toString(){
+		return "State: " + this.state + ", Observation: " + this.observation;
+	}
 	
 }
