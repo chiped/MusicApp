@@ -110,7 +110,6 @@ public class Song {
 		int ppq = sequence.getResolution();
 		int trackNumber = 0;
 		for (Track track : sequence.getTracks()) {
-
 			Song song = new Song();
 															// updating tempo
 			trackNumber++;
@@ -135,10 +134,12 @@ public class Song {
 								.doubleValue()) / ppq;
 						double arrivalTime = map.get(pitch).doubleValue() / ppq;
 						ArrayList<Integer> pitchList = new ArrayList<Integer>();
-						pitchList.add(pitch);
+						for(Integer each : map.keySet())
+							pitchList.add(each);
 						Note newNote = new Note(tickDuration, pitchList, arrivalTime);
 						song.addNote(newNote);
 						song.getKey().add(NOTE_NAMES[pitch%12]);
+						map.remove(pitch);
 
 					} else if (sm.getCommand() == NOTE_ON) {
 						map.put(pitch, (long) tick);

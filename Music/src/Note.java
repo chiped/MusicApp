@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Note{
 	/**
@@ -9,6 +10,7 @@ public class Note{
 	private ArrayList<Integer> pitch;
 	public Note(double duration, ArrayList<Integer> pitch, double arrivalTime){
 		this.duration  = duration;
+		Collections.sort(pitch);
 		this.pitch = pitch;
 		this.arrivalTime = arrivalTime;
 	}
@@ -27,12 +29,6 @@ public class Note{
 	public void setPitch(ArrayList<Integer> pitch) {
 		this.pitch = pitch;
 	}
-//	@Override
-//	public boolean equals(Object other) {
-//		if(other instanceof Note && ((Note)other).getPitch() == pitch)
-//			return true;
-//		return false;
-//	}
 	@Override
 	public String toString() {
 		return "Note {duration=" + duration + ":pitch=" + pitch + ":arrivalTime=" + arrivalTime + "}";
