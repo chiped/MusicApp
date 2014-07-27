@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -133,8 +134,9 @@ public class Song {
 						double tickDuration = (tick - map.get(pitch)
 								.doubleValue()) / ppq;
 						double arrivalTime = map.get(pitch).doubleValue() / ppq;
-						Note newNote = new Note(tickDuration, pitch,
-								arrivalTime);
+						ArrayList<Integer> pitchList = new ArrayList<Integer>();
+						pitchList.add(pitch);
+						Note newNote = new Note(tickDuration, pitchList, arrivalTime);
 						song.addNote(newNote);
 						song.getKey().add(NOTE_NAMES[pitch%12]);
 
@@ -178,9 +180,8 @@ public class Song {
 		String genre = songVariables[4].replace("genre=", "");
 
 		ArrayList<Note> notes = new ArrayList<Note>();
-		notesString = notesString.replace("[", "");
-		notesString = notesString.replace("]", "");
-		String[] notesStringArray = notesString.split(", ");
+		notesString = notesString.substring(1, notesString.length()-1);
+		String[] notesStringArray = notesString.split(",\\s+(?![^\\[]*\\])");
 		for (String noteString : notesStringArray) {
 			notes.add(Note.makeNoteFromString(noteString));
 		}

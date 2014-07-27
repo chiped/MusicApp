@@ -1,11 +1,13 @@
+import java.util.ArrayList;
+
 public class Note{
 	/**
 	 * 
 	 */
 	private double arrivalTime;
 	private double duration;
-	private int pitch;
-	public Note(double duration, int pitch, double arrivalTime){
+	private ArrayList<Integer> pitch;
+	public Note(double duration, ArrayList<Integer> pitch, double arrivalTime){
 		this.duration  = duration;
 		this.pitch = pitch;
 		this.arrivalTime = arrivalTime;
@@ -19,18 +21,18 @@ public class Note{
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	public int getPitch() {
+	public ArrayList<Integer> getPitch() {
 		return pitch;
 	}
-	public void setPitch(int pitch) {
+	public void setPitch(ArrayList<Integer> pitch) {
 		this.pitch = pitch;
 	}
-	@Override
-	public boolean equals(Object other) {
-		if(other instanceof Note && ((Note)other).getPitch() == pitch)
-			return true;
-		return false;
-	}
+//	@Override
+//	public boolean equals(Object other) {
+//		if(other instanceof Note && ((Note)other).getPitch() == pitch)
+//			return true;
+//		return false;
+//	}
 	@Override
 	public String toString() {
 		return "Note {duration=" + duration + ":pitch=" + pitch + ":arrivalTime=" + arrivalTime + "}";
@@ -43,14 +45,22 @@ public class Note{
 	public static Note makeNoteFromString(String aNoteString){	
 		aNoteString = aNoteString.replace("Note {", "");
 		aNoteString = aNoteString.replace("}", "");
-		
+
 		String[] noteVariables = aNoteString.split(":");	
+
 		String durationString = noteVariables[0].replace("duration=","");
 		String pitchString = noteVariables[1].replace("pitch=","");
 		String arrivalTimeString = noteVariables[2].replace("arrivalTime=","");
+
+		
+		ArrayList<Integer> pitch = new ArrayList<Integer>();
+		pitchString = pitchString.substring(1, pitchString.length()-1);
+		String[] pitchArray = pitchString.split(", ");
+		for(String each:pitchArray) {
+			pitch.add(Integer.parseInt(each));
+		}
 		
 		double duration = Double.parseDouble(durationString);
-		int pitch = Integer.parseInt(pitchString);
 		double arrivalTime = Double.parseDouble(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
 	}
