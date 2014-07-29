@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -28,7 +29,8 @@ public class HMM<State, Observation> {
 		observationProbabilities = new TreeMap<State, TreeMap<Observation, Double>>();
 		for (State state : states) {
 			transitionProbabilities.put(state, new TreeMap<State, Double>());
-			observationProbabilities.put(state, new TreeMap<Observation, Double>());
+			observationProbabilities.put(state,
+					new TreeMap<Observation, Double>());
 		}
 
 		// calculate the counts
@@ -76,7 +78,7 @@ public class HMM<State, Observation> {
 				sum += entry.getValue();
 
 			}
-			
+
 			if (sum != 0) {
 				for (Entry<State, Double> entry : stateTransitionProbabilities
 						.entrySet()) {
@@ -85,8 +87,7 @@ public class HMM<State, Observation> {
 					stateTransitionProbabilities.put(key, value);
 				}
 			}
-			
-			
+
 			sum = 0;
 			for (Entry<Observation, Double> entry : stateObservationProbabilities
 					.entrySet()) {
@@ -104,6 +105,63 @@ public class HMM<State, Observation> {
 
 		}
 
+	}
+
+	public ArrayList<Pair<State, Observation>> getRandomPath(int length) {
+
+		ArrayList<Pair<State, Observation>> path = new ArrayList<Pair<State, Observation>>(
+				length);
+
+		int size = states.size();
+		int randomIndex = new Random().nextInt(size); // In real life, the
+														// Random object should
+														// be rather more shared
+														// than this
+		int i = 0;
+		State currentState = null;
+		for (State state : states) {
+			if (i == randomIndex) {
+				currentState = state;
+			}
+			i = i + 1;
+		}
+		while (path.size() != length) {
+			TreeMap<State, Double> currentStateTransitions = transitionProbabilities
+					.get(currentState);
+
+			int randomValue = new Random().nextInt() % 100;
+			State next_state = null;
+			for (Map.Entry<State, Double> entry : currentStateTransitions.entrySet()) {
+				randomValue -= (entry.getValue()*100);
+				
+				if (randomValue <= 1) {
+					next_state = entry.getKey();
+					break;
+				}
+
+			}
+
+			TreeMap<Observation, Double> currentStateObservations = observationProbabilities
+					.get(currentState);
+
+			randomValue = new Random().nextInt() % 100;
+			Observation current_observation = null;
+			for (Map.Entry<Observation, Double> entry : currentStateObservations.entrySet()) {
+				randomValue -= (entry.getValue()*100);
+				
+				if (randomValue <= 1) {
+					current_observation = entry.getKey();
+					break;
+				}
+
+			}
+			path.add(new Pair<State, Observation>(currentState, current_observation));
+			currentState = next_state;
+			if(next_state == null || current_observation == null){
+				System.out.println("something really bad happened");
+			}
+		}
+		return path;
 	}
 
 	public TreeSet<State> getStates() {
