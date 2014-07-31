@@ -42,6 +42,11 @@ public class HMMTests {
 		assertEquals(true, model.getStates().contains("3"));
 		assertEquals(true, model.getObservations().contains("a"));
 		assertEquals(true, model.getObservations().contains("b"));
+		TreeMap<String,Double> initial = model.getInitialProbabilities();
+		assertEquals(new Double(4.0/7), initial.get("1"));
+		assertEquals(new Double(2.0/7), initial.get("2"));
+		assertEquals(new Double(1.0/7), initial.get("3"));
+		
 		
 		TreeMap<String,Double> transition1 = model.getTransitionProbabilities().get("1");
 		TreeMap<String,Double> observation1 = model.getObservationProbabilities().get("1");
@@ -63,6 +68,12 @@ public class HMMTests {
 		assertEquals(new Double(1),transition3.get("1"));
 		assertEquals(new Double(1),observation3.get("a"));
 		
+		
+		
+		ArrayList<Pair<String, String>> modelPath = model.getRandomPath(6);
+		for(Pair<String,String> p: modelPath){
+			System.out.println(p);
+		}
 		
 	}
 

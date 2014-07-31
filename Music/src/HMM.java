@@ -16,7 +16,10 @@ public class HMM<State, Observation> {
 	public HMM(ArrayList<HMMTrainingInstance<State, Observation>> instances) {
 		states = new TreeSet<State>();
 		observations = new TreeSet<Observation>();
-
+		initialProbabilities = new TreeMap<State,Double>();
+		transitionProbabilities = new TreeMap<State, TreeMap<State, Double>>();
+		observationProbabilities = new TreeMap<State, TreeMap<Observation, Double>>();
+		
 		for (HMMTrainingInstance<State, Observation> instance : instances) {
 			if (states.contains(instance.getState()) == false) {
 				states.add(instance.getState());
@@ -32,11 +35,10 @@ public class HMM<State, Observation> {
 						initialStateCount + 1);
 			}
 		}
-
 		setProbabilities(initialProbabilities);
+
 		// initialize the mapping
-		transitionProbabilities = new TreeMap<State, TreeMap<State, Double>>();
-		observationProbabilities = new TreeMap<State, TreeMap<Observation, Double>>();
+		
 		for (State state : states) {
 			transitionProbabilities.put(state, new TreeMap<State, Double>());
 			observationProbabilities.put(state,
@@ -109,6 +111,7 @@ public class HMM<State, Observation> {
 			value = entry.getKey();
 			i += entry.getValue();
 			if (i >= randomValue) {
+				
 				return value;
 			}
 		}
@@ -171,5 +174,8 @@ public class HMM<State, Observation> {
 	public void setObservationProbabilities(
 			TreeMap<State, TreeMap<Observation, Double>> observationProbabilities) {
 		this.observationProbabilities = observationProbabilities;
+	}
+	public TreeMap<State,  Double> getInitialProbabilities() {
+		return initialProbabilities;
 	}
 }
