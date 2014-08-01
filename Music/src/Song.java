@@ -5,8 +5,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.sound.midi.Instrument;
@@ -18,7 +16,6 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Track;
@@ -29,6 +26,7 @@ public class Song {
 	private ArrayList<Note> notes;
 	private HashSet<String> key;
 	private String genre;
+	private float tempo;
 	
 	public Song() {
 		notes = new ArrayList<Note>();
@@ -88,6 +86,14 @@ public class Song {
 		this.genre = genre;
 	}
 
+	public float getTempo() {
+		return tempo;
+	}
+
+	public void setTempo(float tempo) {
+		this.tempo = tempo;
+	}
+
 	@Override
 	public String toString() {
 		return "Song (songName=" + songName + ";instrument=" + instrument
@@ -113,8 +119,9 @@ public class Song {
 		ArrayList<Song> songs = new ArrayList<Song>();
 		Sequence sequence = MidiSystem.getSequence(midi);
 		
-		int ppq = 1;//sequence.getResolution();
+		int ppq = sequence.getResolution();
 		int trackNumber = 0;
+		float tempo = 120;
 		for (Track track : sequence.getTracks()) {
 			Song song = new Song();
 															// updating tempo
@@ -158,13 +165,43 @@ public class Song {
 						currentPitches.add(pitch);
 					} 
 				}
+				else {
+					if(message instanceof MetaMessage) {
+						MetaMessage mm = (MetaMessage) message;
+						byte[] abData = mm.getData();
+						if(mm.getType() == 0x51) {
+							System.out.println("Tempo changed");int	nTempo = ((abData[0] & 0xFF) << 16)
+									| ((abData[1] & 0xFF) << 8)
+									| (abData[2] & 0xFF);           // tempo in microseconds per beat
+							float bpm = convertTempo(nTempo);
+							// truncate it to 2 digits after dot
+							bpm = (float) (Math.round(bpm*100.0f)/100.0f);
+							tempo = bpm;
+							System.out.println("Set Tempo: "+bpm+" bpm");
+						}
+						else if(mm.getType() == 0x03) {
+							song.setSongName(new String(abData));
+						}
+						else if(mm.getType() == 0x04) {
+							System.out.println("Instrument: " + new String(mm.getMessage()));
+						}
+					}
+				}
 			}
 			
 			if (song.getNotes().size() > 0){
+				song.setTempo(tempo);
 				songs.add(song);
 			}
 		}
 		return songs;
+	}
+
+	private static float convertTempo(float value) {
+		if (value <= 0) {
+			value = 0.1f;
+		}
+		return 60000000.0f / value;
 	}
 
 	public void writeToFile(String fileDirectory) {
@@ -304,12 +341,20 @@ public class Song {
 			final MidiChannel[] mc = synth.getChannels();
 			Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
 			synth.loadInstrument(instr[80]);
+			long initial = System.currentTimeMillis();
+			float tempoFactor = 60000/getTempo();
 			for(Note n:getNotes()) {
+				long elapsed = System.currentTimeMillis() - initial;
+				if(Math.round(n.getArrivalTime()*tempoFactor) > elapsed) {
+					try {
+						Thread.sleep(Math.round(n.getArrivalTime()*tempoFactor) - elapsed);
+					} catch (InterruptedException e) {}
+				}
 				for(int pitch : n.getPitch()) {
 					mc[0].noteOn(pitch,75);
 				}
 				try {
-					Thread.sleep(Math.round(n.getDuration()*2.5));
+					Thread.sleep(Math.round(n.getDuration()*tempoFactor));
 				} catch (InterruptedException e) {}
 				for(int pitch : n.getPitch()) {
 					mc[0].noteOff(pitch);

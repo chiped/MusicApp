@@ -22,13 +22,22 @@ public class Main {
 				for(int i=1; i<nGrams.size(); i++) {
 					Ngram nGram = nGrams.get(i);
 					HMMTrainingInstance<Ngram, Double> instance = new HMMTrainingInstance<Ngram, Double>(nGram, nGram.getDuration());
+					instance.setPrevInstance(previous);
 					previous.setNextInstance(instance);
 					previous = instance;
 					System.out.println(instance);
 				}
 
 			}
-//			songs.get(0).play();
+//			for(Song song : songs) {
+//				final Song thisSong = song;
+//				new Thread(new Runnable() {
+//					public void run() {
+//						thisSong.play();
+//					}
+//				}).start();
+//			}
+			songs.get(1).play();
 		} catch (InvalidMidiDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
