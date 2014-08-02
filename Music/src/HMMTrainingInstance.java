@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HMMTrainingInstance<State,Observation> {
 	private State state;
@@ -33,6 +36,22 @@ public class HMMTrainingInstance<State,Observation> {
 	}
 	public void setPrevInstance(HMMTrainingInstance<State,Observation> prev){
 		this.prevInstance = prev;
+	}
+	public static <S, O> ArrayList<HMMTrainingInstance<S, O>> createList(List<S> states, List<O> observations) throws Exception {
+		ArrayList<HMMTrainingInstance<S, O>> returnList = new ArrayList<HMMTrainingInstance<S, O>>();
+		if(states.size() == 0 || observations.size() ==0 || states.size() != observations.size()) {
+			throw new Exception("Size mismatch error");
+		}
+		HMMTrainingInstance<S, O> previous = new HMMTrainingInstance<S, O>(states.get(0), observations.get(0));
+		returnList.add(previous);
+		for(int i=1; i<states.size(); i++) {
+			HMMTrainingInstance<S, O> instance = new HMMTrainingInstance<S, O>(states.get(i), observations.get(i));
+			returnList.add(instance);
+			instance.setPrevInstance(previous);
+			previous.setNextInstance(instance);
+			
+		}
+		return returnList;
 	}
 	public String toString(){
 		return "State: " + this.state + ", Observation: " + this.observation;

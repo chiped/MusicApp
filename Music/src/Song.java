@@ -294,38 +294,38 @@ public class Song {
 
 	}
 
-	public void writeNGramsToFile(String fileDirectory, int n) {
-		try {
-			File file = new File(fileDirectory + "\\gram_" + n + "_songName_"
-					+ this.songName + "_instrument_" + this.instrument
-					+ "_genre_" + this.genre + "_key_" + this.key + ".txt");
-
-			BufferedWriter output = new BufferedWriter(new FileWriter(file));
-			for (int i = n; i < notes.size(); i++) {
-				Ngram ngram = new Ngram(songName, instrument,
-						new ArrayList<Note>( notes.subList(i - n, i) ), key,
-						genre);
-				output.write(ngram.toString());
-			}
-			output.close();
-		} catch (Exception e) {
-			System.out.println("song failed to write to ngrams file ");
-			System.exit(1);
-		}
-
-	}
-	
-	public ArrayList<Ngram> getNGrams(int n) {
-		ArrayList<Ngram> nGrams = new ArrayList<Ngram>();
-		for (int i = n; i < notes.size(); i++) {
-			Ngram ngram = new Ngram(songName, instrument,
-					new ArrayList<Note>( notes.subList(i - n, i)), key,
-					genre);
-			nGrams.add(ngram);
-		}
-		return nGrams;
-	}
-	
+//	public void writeNGramsToFile(String fileDirectory, int n) {
+//		try {
+//			File file = new File(fileDirectory + "\\gram_" + n + "_songName_"
+//					+ this.songName + "_instrument_" + this.instrument
+//					+ "_genre_" + this.genre + "_key_" + this.key + ".txt");
+//
+//			BufferedWriter output = new BufferedWriter(new FileWriter(file));
+//			for (int i = n; i < notes.size(); i++) {
+//				Ngram ngram = new Ngram(songName, instrument,
+//						new ArrayList<Note>( notes.subList(i - n, i) ), key,
+//						genre);
+//				output.write(ngram.toString());
+//			}
+//			output.close();
+//		} catch (Exception e) {
+//			System.out.println("song failed to write to ngrams file ");
+//			System.exit(1);
+//		}
+//
+//	}
+//	
+//	public ArrayList<Ngram> getNGrams(int n) {
+//		ArrayList<Ngram> nGrams = new ArrayList<Ngram>();
+//		for (int i = n; i < notes.size(); i++) {
+//			Ngram ngram = new Ngram(songName, instrument,
+//					new ArrayList<Note>( notes.subList(i - n, i)), key,
+//					genre);
+//			nGrams.add(ngram);
+//		}
+//		return nGrams;
+//	}
+		
 	public double getDuration() {
 		double duration = 0;
 		for(Note note : getNotes()) {

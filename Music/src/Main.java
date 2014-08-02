@@ -13,20 +13,42 @@ public class Main {
 		try {
 			ArrayList<Song> songs = Song.makeSongFromMidiFile(midi);
 			for (Song song : songs){
-				Song s1 = song;
-				for(Note n : s1.getNotes()){
+				for(Note n : song.getNotes()){
 					System.out.println(n);
 				}
-				ArrayList<Ngram> nGrams = s1.getNGrams(3);
-				HMMTrainingInstance<Ngram, Double> previous = new HMMTrainingInstance<Ngram, Double>(nGrams.get(0), nGrams.get(0).getDuration());
-				for(int i=1; i<nGrams.size(); i++) {
-					Ngram nGram = nGrams.get(i);
-					HMMTrainingInstance<Ngram, Double> instance = new HMMTrainingInstance<Ngram, Double>(nGram, nGram.getDuration());
-					instance.setPrevInstance(previous);
-					previous.setNextInstance(instance);
-					previous = instance;
-					System.out.println(instance);
+				
+				ArrayList<NGram<Note>> oneGram = NGram.getNGrams(song.getNotes(), 1);
+				try {//list based on one gram. each note is inside an NGram.
+					HMMTrainingInstance.createList(oneGram.subList(0, oneGram.size()-1), oneGram.subList(1, oneGram.size()));
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
+				ArrayList<Note> notes = song.getNotes();
+				try {//list based on only notes. No extra padding of 1Gram over the note
+					HMMTrainingInstance.createList(notes.subList(0, notes.size()-1), notes.subList(1, notes.size()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				ArrayList<NGram<Note>> threeGram = NGram.getNGrams(song.getNotes(), 3);
+				try {//list based on 3gram of notes. each 3gram has an observation of the 4th note
+					HMMTrainingInstance.createList(threeGram.subList(0, threeGram.size()-1), notes.subList(3, notes.size()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				ArrayList<Double> durations = new ArrayList<Double>();
+				for(Note note : notes) {
+					durations.add(note.getDuration());
+				}
+				ArrayList<NGram<Double>> duration3Gram = NGram.getNGrams(durations, 3);
+				try {//list based on 3gram of durations. each 3gram has an observation of the 4th note
+					HMMTrainingInstance.createList(duration3Gram.subList(0, duration3Gram.size()-1), durations.subList(3, durations.size()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//TODO append all these lists to corresponding lists outside of the forloop to accumulate results from all songs
 
 			}
 //			for(Song song : songs) {
