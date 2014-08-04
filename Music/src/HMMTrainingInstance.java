@@ -49,7 +49,7 @@ public class HMMTrainingInstance<State,Observation> {
 			returnList.add(instance);
 			instance.setPrevInstance(previous);
 			previous.setNextInstance(instance);
-			
+			previous = instance;
 		}
 		return returnList;
 	}
