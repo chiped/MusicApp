@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
-public class NGram<E extends Comparable> implements Comparable<Object> {
+public class NGram<E extends Comparable<E>> implements Comparable<NGram<E>> {
 
 	private int size;
 	private ArrayList<E> items;
@@ -47,7 +47,7 @@ public class NGram<E extends Comparable> implements Comparable<Object> {
 		this.items = new ArrayList<E>(items);
 	}
 
-	public static <E extends Comparable> ArrayList<NGram<E>> getNGrams(
+	public static <E extends Comparable<E>> ArrayList<NGram<E>> getNGrams(
 			ArrayList<E> objects, int n) {
 		ArrayList<NGram<E>> returnList = new ArrayList<NGram<E>>();
 		for (int i = n; i <= objects.size(); i++) {
@@ -61,24 +61,18 @@ public class NGram<E extends Comparable> implements Comparable<Object> {
 		return items.toString();
 	}
 
-	public boolean equals(Object other) {
-	
-		return compareTo(other) == 0;
-
-	}
-
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(NGram<E> o) {
 		// TODO Auto-generated method stub
-		NGram other = (NGram) o;
-		int cmp = this.getSize() - other.getSize();
+		int cmp = size - o.getSize();
 		if (cmp == 0) {
-			
-			if ((other.getItems()).containsAll(this.getItems()) == false ||(this.getItems()).containsAll(other.getItems()) == false) {
-				cmp = -100000;
+			if (getItems().containsAll(o.getItems())
+					&& (o.getItems()).containsAll(getItems())) {
+				cmp = 0;
+			} else {
+				cmp = -1;
 			}
 		}
-
 		return cmp;
 	}
 

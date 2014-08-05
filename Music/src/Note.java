@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Note implements Comparable{
+public class Note implements Comparable<Note>{
 	/**
 	 * 
 	 */
@@ -63,46 +63,26 @@ public class Note implements Comparable{
 	
 	@Override
 	public boolean equals(Object o){
-		if(!(o instanceof Note)){
-			return false;
+		if(o instanceof Note){
+			Note other = (Note) o;
+			return compareTo(other) == 0;
 		}
-		
-		return compareTo(o) == 0;
+		return false;
 	}
-	
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Note o) {
 		// TODO Auto-generated method stub
-		
-		Note other = (Note) o;
-		// TODO Auto-generated method stub
-		if(other == null){
-			return -1;
-		}
 		int cmp = 0;
-		/*
-		if(arrivalTime - o.getArrivalTime() > 0){
-			cmp = -1;
-		}else if (arrivalTime - o.getArrivalTime() < 0){
+		if(this.getDuration() - o.getDuration() != 0){
 			cmp = 1;
 		}
-		*/
 		if(cmp == 0){
-			if(duration - other.getDuration() > 0){
-				cmp = -10;
-				return -10;
-			}else if(duration - other.getDuration() < 0){
-				cmp = 10;
-				return 10;
+			if(pitch.containsAll(o.getPitch()) && (o.getPitch()).containsAll(pitch)){
+				cmp = 0;
+			}else{
+				cmp = -1;
 			}
 		}
-		if(cmp == 0){
-			if(pitch.containsAll(other.getPitch()) == false || other.getPitch().containsAll(pitch) == false){
-				cmp = -20;
-				return -20;
-			}
-		}
-		System.out.println(this + " ," + other + "----------"+cmp);
 		return cmp;
 	}
 }

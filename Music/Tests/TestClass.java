@@ -13,6 +13,7 @@ public class TestClass<L extends Comparable<L>,R extends Comparable<R>> implemen
     }
     public L getL(){ return l; }
     public R getR(){ return r; }
+    public ArrayList<L> getLi(){return li;}
     public void setL(L l){ this.l = l; }
     public void setR(R r){ this.r = r; }
     public String toString(){
@@ -24,6 +25,9 @@ public class TestClass<L extends Comparable<L>,R extends Comparable<R>> implemen
 		int cmp = getL().compareTo(o.getL());
 		if(cmp == 0){
 			cmp = getR().compareTo(o.getR());
+		}
+		if(cmp == 0){
+			cmp = li.containsAll(o.getLi()) ? 0: 1;
 		}
 		return cmp;
 	}
