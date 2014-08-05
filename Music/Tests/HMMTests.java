@@ -75,14 +75,27 @@ public class HMMTests {
 			System.out.println(p);
 		}
 		
-		TestClass<String, String> p1 = new TestClass<String,String>("1","1");
-		TestClass<String, String> p2 = new TestClass<String,String>("2","2");
-		TestClass<String, String> p3 = new TestClass<String,String>("3","3");
+		fakeClass<String> f1 = new fakeClass<String>("1");
+		fakeClass<String> f2 = new fakeClass<String>("1");
+		fakeClass<String> f3 = new fakeClass<String>("1");
 		
-		HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>> j1 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p1,p2);
-		HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>> j2 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p2,p3);
-		HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>> j3 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p1,p3);
-		HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>> j4 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p3,p2);
+		ArrayList<fakeClass<String>> a1 = new ArrayList<fakeClass<String>>();
+		a1.add(f1);
+		a1.add(f2);
+		ArrayList<fakeClass<String>> a2 = new ArrayList<fakeClass<String>>();
+		a2.add(f3);
+		ArrayList<fakeClass<String>> a3 = new ArrayList<fakeClass<String>>();
+		a3.add(f1);
+		a3.add(f2);
+		
+		TestClass<fakeClass<String>, String> p1 = new TestClass<fakeClass<String>,String>(f1,"1",a1);
+		TestClass<fakeClass<String>, String> p2 = new TestClass<fakeClass<String>,String>(f2,"2",a2);
+		TestClass<fakeClass<String>, String> p3 = new TestClass<fakeClass<String>,String>(f1,"3",a3);
+		
+		HMMTrainingInstance<TestClass<fakeClass, String>,String> j1 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p1,p2);
+		HMMTrainingInstance<TestClass<fakeClass, String>,TestClass<fakeClass, String>> j2 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p2,p3);
+		HMMTrainingInstance<TestClass<fakeClass, String>,TestClass<fakeClass, String>> j3 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p1,p3);
+		HMMTrainingInstance<TestClass<fakeClass, String>,TestClass<fakeClass, String>> j4 = new HMMTrainingInstance<TestClass<String, String>,TestClass<String, String>>(p3,p2);
 		
 		j1.setNextInstance(j2);
 		j2.setNextInstance(j3);

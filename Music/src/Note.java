@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Note implements Comparable<Note>{
+public class Note implements Comparable{
 	/**
 	 * 
 	 */
@@ -66,17 +66,17 @@ public class Note implements Comparable<Note>{
 		if(!(o instanceof Note)){
 			return false;
 		}
-		if(o == this){
-			return true;
-		}
-		Note other = (Note) o;
-		return compareTo(other) == 0;
+		
+		return compareTo(o) == 0;
 	}
 	
-	public int compareTo(Note other) {
-		Note o = (Note) other;
+	@Override
+	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
-		if(o == null){
+		
+		Note other = (Note) o;
+		// TODO Auto-generated method stub
+		if(other == null){
 			return -1;
 		}
 		int cmp = 0;
@@ -88,21 +88,21 @@ public class Note implements Comparable<Note>{
 		}
 		*/
 		if(cmp == 0){
-			if(duration - o.getDuration() > 0){
+			if(duration - other.getDuration() > 0){
 				cmp = -10;
 				return -10;
-			}else if(duration - o.getDuration() < 0){
+			}else if(duration - other.getDuration() < 0){
 				cmp = 10;
 				return 10;
 			}
 		}
 		if(cmp == 0){
-			if(pitch.equals(o.getPitch()) == false){
+			if(pitch.containsAll(other.getPitch()) == false || other.getPitch().containsAll(pitch) == false){
 				cmp = -20;
 				return -20;
 			}
 		}
-		
+		System.out.println(this + " ," + other + "----------"+cmp);
 		return cmp;
 	}
 }

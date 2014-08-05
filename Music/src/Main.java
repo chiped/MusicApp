@@ -32,7 +32,7 @@ public class Main {
 					System.out.println(model.getTransitionProbabilities());
 					
 					System.out.println("random path");
-					System.out.println(model.getRandomPath(10));
+					System.out.println(model.getRandomPath(8));
 					
 				} catch (Exception e) {
 					e.printStackTrace();
