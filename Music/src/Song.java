@@ -129,6 +129,7 @@ public class Song {
 			System.out.println("Track " + trackNumber + ": size = "
 					+ track.size());
 			System.out.println();
+			
 			HashSet<Integer> currentPitches = new HashSet<Integer>();
 			long arrivalTime = 0;
 			for (int i = 0; i < track.size(); i++) {
@@ -183,6 +184,7 @@ public class Song {
 							song.setSongName(new String(abData));
 						}
 						else if(mm.getType() == 0x04) {
+							song.setInstrument(new String(mm.getMessage()));
 							System.out.println("Instrument: " + new String(mm.getMessage()));
 						}
 					}
@@ -204,20 +206,6 @@ public class Song {
 		return 60000000.0f / value;
 	}
 
-	public void writeToFile(String fileDirectory) {
-		try {
-			File file = new File(fileDirectory + "\\" + "song_" + songName
-					+ ".txt");
-
-			BufferedWriter output = new BufferedWriter(new FileWriter(file));
-			output.write(this.toString());
-			output.close();
-		} catch (Exception e) {
-			System.out.println("song failed to write to file ");
-			System.exit(1);
-		}
-
-	}
 
 	public static Song makeSongFromString(String aSongString) {
 		aSongString = aSongString.replace("Song (", "");
@@ -249,82 +237,6 @@ public class Song {
 		return new Song(songName, instrument, notes, key, genre);
 	}
 
-	public static Song makeSongFromFile(String filePath) {
-		try {
-			File file = new File(filePath);
-			ArrayList<Song> songs = new ArrayList<Song>();
-
-			BufferedReader inputFile = new BufferedReader(new FileReader(file));
-			String line = inputFile.readLine();
-			inputFile.close();
-			if (line != null) {
-				return makeSongFromString(line.replace("\n", ""));
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			System.out.println("song failed to read from file");
-			System.exit(1);
-			return null;
-		}
-
-	}
-
-	public static ArrayList<Song> makeSongsFromDirectory(String fileDirectory) {
-
-		try {
-			ArrayList<Song> songs = new ArrayList<Song>();
-
-			File songDirectory = new File(fileDirectory);
-			File[] songList = songDirectory.listFiles();
-			for (File file : songList) {
-				String path = file.getAbsolutePath();
-				if (path.replace(fileDirectory, "").startsWith("\\song_")) {
-					Song song = Song.makeSongFromFile(path);
-					songs.add(song);
-				}
-			}
-			return songs;
-
-		} catch (Exception e) {
-			System.out.println("song failed to read from file");
-			System.exit(1);
-			return null;
-		}
-
-	}
-
-//	public void writeNGramsToFile(String fileDirectory, int n) {
-//		try {
-//			File file = new File(fileDirectory + "\\gram_" + n + "_songName_"
-//					+ this.songName + "_instrument_" + this.instrument
-//					+ "_genre_" + this.genre + "_key_" + this.key + ".txt");
-//
-//			BufferedWriter output = new BufferedWriter(new FileWriter(file));
-//			for (int i = n; i < notes.size(); i++) {
-//				Ngram ngram = new Ngram(songName, instrument,
-//						new ArrayList<Note>( notes.subList(i - n, i) ), key,
-//						genre);
-//				output.write(ngram.toString());
-//			}
-//			output.close();
-//		} catch (Exception e) {
-//			System.out.println("song failed to write to ngrams file ");
-//			System.exit(1);
-//		}
-//
-//	}
-//	
-//	public ArrayList<Ngram> getNGrams(int n) {
-//		ArrayList<Ngram> nGrams = new ArrayList<Ngram>();
-//		for (int i = n; i < notes.size(); i++) {
-//			Ngram ngram = new Ngram(songName, instrument,
-//					new ArrayList<Note>( notes.subList(i - n, i)), key,
-//					genre);
-//			nGrams.add(ngram);
-//		}
-//		return nGrams;
-//	}
 		
 	public double getDuration() {
 		double duration = 0;
@@ -362,4 +274,101 @@ public class Song {
 			}
 		} catch (MidiUnavailableException e) {}
 	}
+	
+	
+	/*
+	public static Song makeSongFromFile(String filePath) {
+		try {
+			File file = new File(filePath);
+			ArrayList<Song> songs = new ArrayList<Song>();
+
+			BufferedReader inputFile = new BufferedReader(new FileReader(file));
+			String line = inputFile.readLine();
+			inputFile.close();
+			if (line != null) {
+				return makeSongFromString(line.replace("\n", ""));
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			System.out.println("song failed to read from file");
+			System.exit(1);
+			return null;
+		}
+
+	}
+	*/
+/*
+	public static ArrayList<Song> makeSongsFromDirectory(String fileDirectory) {
+
+		try {
+			ArrayList<Song> songs = new ArrayList<Song>();
+
+			File songDirectory = new File(fileDirectory);
+			File[] songList = songDirectory.listFiles();
+			for (File file : songList) {
+				String path = file.getAbsolutePath();
+				if (path.replace(fileDirectory, "").startsWith("\\song_")) {
+					Song song = Song.makeSongFromFile(path);
+					songs.add(song);
+				}
+			}
+			return songs;
+
+		} catch (Exception e) {
+			System.out.println("song failed to read from file");
+			System.exit(1);
+			return null;
+		}
+
+	}
+*/
+//	public void writeNGramsToFile(String fileDirectory, int n) {
+//		try {
+//			File file = new File(fileDirectory + "\\gram_" + n + "_songName_"
+//					+ this.songName + "_instrument_" + this.instrument
+//					+ "_genre_" + this.genre + "_key_" + this.key + ".txt");
+//
+//			BufferedWriter output = new BufferedWriter(new FileWriter(file));
+//			for (int i = n; i < notes.size(); i++) {
+//				Ngram ngram = new Ngram(songName, instrument,
+//						new ArrayList<Note>( notes.subList(i - n, i) ), key,
+//						genre);
+//				output.write(ngram.toString());
+//			}
+//			output.close();
+//		} catch (Exception e) {
+//			System.out.println("song failed to write to ngrams file ");
+//			System.exit(1);
+//		}
+//
+//	}
+//	
+//	public ArrayList<Ngram> getNGrams(int n) {
+//		ArrayList<Ngram> nGrams = new ArrayList<Ngram>();
+//		for (int i = n; i < notes.size(); i++) {
+//			Ngram ngram = new Ngram(songName, instrument,
+//					new ArrayList<Note>( notes.subList(i - n, i)), key,
+//					genre);
+//			nGrams.add(ngram);
+//		}
+//		return nGrams;
+//	}
+	
+
+	/*
+	public void writeToFile(String fileDirectory) {
+		try {
+			File file = new File(fileDirectory + "\\" + "song_" + songName
+					+ ".txt");
+
+			BufferedWriter output = new BufferedWriter(new FileWriter(file));
+			output.write(this.toString());
+			output.close();
+		} catch (Exception e) {
+			System.out.println("song failed to write to file ");
+			System.exit(1);
+		}
+
+	}*/
 }
