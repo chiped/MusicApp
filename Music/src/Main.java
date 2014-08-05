@@ -8,7 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		File midi = new File("C:\\Users\\ChiP\\Desktop\\midiTest3.mid");
+		File midi = new File("C:\\Users\\Matthew\\Desktop\\midiTest3.mid");
 
 		try {
 			ArrayList<Song> songs = Song.makeSongFromMidiFile(midi);
@@ -19,11 +19,26 @@ public class Main {
 				
 				ArrayList<NGram<Note>> oneGram = NGram.getNGrams(song.getNotes(), 1);
 				try {//list based on one gram. each note is inside an NGram.
-					HMMTrainingInstance.createList(oneGram.subList(0, oneGram.size()-1), oneGram.subList(1, oneGram.size()));
+					ArrayList<HMMTrainingInstance<NGram<Note>, NGram<Note>>> trainingSet = HMMTrainingInstance.createList(oneGram.subList(0, oneGram.size()-1), oneGram.subList(1, oneGram.size()));
+					
+					HMM<NGram<Note>, NGram<Note>> model = new HMM<NGram<Note>, NGram<Note>>(trainingSet);
+					System.out.println("Initial Probabilities");
+					System.out.println(model.getInitialProbabilities());
+					System.out.println("States");
+					System.out.println(model.getStates());
+					System.out.println("Observations");
+					System.out.println(model.getObservations());
+					System.out.println("transitions");
+					System.out.println(model.getTransitionProbabilities());
+					
+					System.out.println("random path");
+					System.out.println(model.getRandomPath(10));
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
+				/*
 				ArrayList<Note> notes = song.getNotes();
 				try {//list based on only notes. No extra padding of 1Gram over the note
 					HMMTrainingInstance.createList(notes.subList(0, notes.size()-1), notes.subList(1, notes.size()));
@@ -49,7 +64,7 @@ public class Main {
 					e.printStackTrace();
 				}
 				//TODO append all these lists to corresponding lists outside of the forloop to accumulate results from all songs
-
+				*/
 			}
 //			for(Song song : songs) {
 //				final Song thisSong = song;
@@ -59,7 +74,7 @@ public class Main {
 //					}
 //				}).start();
 //			}
-			songs.get(1).play();
+			songs.get(0).play();
 		} catch (InvalidMidiDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

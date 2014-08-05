@@ -12,4 +12,5 @@ public class Pair<L,R> {
     public String toString(){
     	return "<" + getL().toString() + "," +getR().toString() +">";
     }
+	
 }

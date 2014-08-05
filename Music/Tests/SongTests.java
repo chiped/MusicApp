@@ -206,6 +206,8 @@ public class SongTests {
 		Note n2 = new Note(1, zeroAndOne, 1);
 		Note n3 = new Note(2, zeroAndOneAndTwo, 2);
 
+
+		
 		Song s1 = new Song();
 
 		HashSet<String> key = new HashSet<String>();
@@ -236,7 +238,8 @@ public class SongTests {
 		Note n1 = new Note(0, zero, 0);
 		Note n2 = new Note(1, one, 1);
 		Note n3 = new Note(2, two, 2);
-
+		
+	
 		Song s1 = new Song();
 
 		HashSet<String> key = new HashSet<String>();
@@ -252,6 +255,7 @@ public class SongTests {
 		s1.setInstrument("Guitar");
 		s1.setKey(key);
 
+		
 		/*
 		 * s1.writeToFile(directory); Song s2 = Song.makeSongFromFile(directory
 		 * +"\\song_Worst Of Lullabies.txt");
@@ -263,7 +267,7 @@ public class SongTests {
 		 * Song s3 = testSongs.get(0); assertEquals(s1.toString(),
 		 * s3.toString());
 		 */
-
+		
 	}
 
 }

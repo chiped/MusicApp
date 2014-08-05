@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HMMTrainingInstance<State,Observation> {
+public class HMMTrainingInstance<State extends Comparable<State>,Observation extends Comparable<Observation>> {
 	private State state;
 	private Observation observation;
 	private HMMTrainingInstance<State,Observation> nextInstance;
@@ -12,6 +12,7 @@ public class HMMTrainingInstance<State,Observation> {
 		this.state = aState;
 		this.observation = anObservation;
 		this.prevInstance = null;
+		this.nextInstance = null;
 	}
 	public State getState() {
 		return state;
@@ -37,7 +38,7 @@ public class HMMTrainingInstance<State,Observation> {
 	public void setPrevInstance(HMMTrainingInstance<State,Observation> prev){
 		this.prevInstance = prev;
 	}
-	public static <S, O> ArrayList<HMMTrainingInstance<S, O>> createList(List<S> states, List<O> observations) throws Exception {
+	public static <S extends Comparable<S>, O extends Comparable<O>> ArrayList<HMMTrainingInstance<S, O>> createList(List<S> states, List<O> observations) throws Exception {
 		ArrayList<HMMTrainingInstance<S, O>> returnList = new ArrayList<HMMTrainingInstance<S, O>>();
 		if(states.size() == 0 || observations.size() ==0 || states.size() != observations.size()) {
 			throw new Exception("Size mismatch error");

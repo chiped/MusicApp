@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class HMM<State, Observation> {
+public class HMM<State extends Comparable<State>, Observation extends Comparable<Observation>> {
 	private TreeSet<State> states;
 	private TreeSet<Observation> observations;
 
@@ -16,10 +16,10 @@ public class HMM<State, Observation> {
 	public HMM(ArrayList<HMMTrainingInstance<State, Observation>> instances) {
 		states = new TreeSet<State>();
 		observations = new TreeSet<Observation>();
-		initialProbabilities = new TreeMap<State,Double>();
+		initialProbabilities = new TreeMap<State, Double>();
 		transitionProbabilities = new TreeMap<State, TreeMap<State, Double>>();
 		observationProbabilities = new TreeMap<State, TreeMap<Observation, Double>>();
-		
+
 		for (HMMTrainingInstance<State, Observation> instance : instances) {
 			if (states.contains(instance.getState()) == false) {
 				states.add(instance.getState());
@@ -38,14 +38,15 @@ public class HMM<State, Observation> {
 		setProbabilities(initialProbabilities);
 
 		// initialize the mapping
-		
+
 		for (State state : states) {
 			transitionProbabilities.put(state, new TreeMap<State, Double>());
 			observationProbabilities.put(state,
 					new TreeMap<Observation, Double>());
+			System.out.println(state);
 		}
-
 		// calculate the counts
+	
 		for (HMMTrainingInstance<State, Observation> instance : instances) {
 
 			State state = instance.getState();
@@ -55,9 +56,19 @@ public class HMM<State, Observation> {
 					.get(state);
 			TreeMap<Observation, Double> statesObservationProbabilities = observationProbabilities
 					.get(state);
-
+			
 			if (instance.getNextInstance() != null) {
+				System.out.println("22" + instance);
+				System.out.println("333"+ instance.getNextInstance());
+				
 				State nextState = instance.getNextInstance().getState();
+				System.out.println(nextState.getClass() + " , " + instance.getState().getClass());
+				System.out.println(nextState.compareTo(instance.getState()));
+				System.out.println("state: " + nextState);
+				System.out.println(statesTransitionProbabilities);
+				System.out.println(transitionProbabilities);
+				System.out.println(statesTransitionProbabilities
+						.containsKey(nextState));
 				double nextStateTransitionCount = statesTransitionProbabilities
 						.containsKey(nextState) ? statesTransitionProbabilities
 						.get(nextState) : 0.0;
@@ -86,7 +97,7 @@ public class HMM<State, Observation> {
 
 	}
 
-	private <T> void setProbabilities(TreeMap<T, Double> probabilities) {
+	private <T extends Comparable<T>> void setProbabilities(TreeMap<T, Double> probabilities) {
 		double sum = 0;
 		for (Entry<T, Double> entry : probabilities.entrySet()) {
 			sum += entry.getValue();
@@ -111,7 +122,7 @@ public class HMM<State, Observation> {
 			value = entry.getKey();
 			i += entry.getValue();
 			if (i >= randomValue) {
-				
+
 				return value;
 			}
 		}
@@ -125,7 +136,7 @@ public class HMM<State, Observation> {
 				length);
 
 		State currentState = randomValue(initialProbabilities);
-		
+
 		while (path.size() != length) {
 			TreeMap<State, Double> currentStateTransitions = transitionProbabilities
 					.get(currentState);
@@ -175,7 +186,8 @@ public class HMM<State, Observation> {
 			TreeMap<State, TreeMap<Observation, Double>> observationProbabilities) {
 		this.observationProbabilities = observationProbabilities;
 	}
-	public TreeMap<State,  Double> getInitialProbabilities() {
+
+	public TreeMap<State, Double> getInitialProbabilities() {
 		return initialProbabilities;
 	}
 }
