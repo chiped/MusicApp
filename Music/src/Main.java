@@ -8,8 +8,8 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		File midi = new File("C:\\Users\\Matthew\\Desktop\\midiTest3.mid");
-
+		File midi = new File("C:\\Users\\Matthew\\Desktop\\furelise.mid");
+		Song finalSong;
 		try {
 			ArrayList<Song> songs = Song.makeSongFromMidiFile(midi);
 			for (Song song : songs){
@@ -32,8 +32,13 @@ public class Main {
 					System.out.println(model.getTransitionProbabilities());
 					
 					System.out.println("random path");
-					System.out.println(model.getRandomPath(8));
+					ArrayList<Pair<NGram<Note>, NGram<Note>>> oneGramPath = model.getRandomPath(500);
+					System.out.println(oneGramPath);
 					
+					finalSong = Song.OneGramPathToSong(oneGramPath);
+					System.out.println("new song");
+					System.out.println(finalSong);
+					finalSong.play();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -74,7 +79,8 @@ public class Main {
 //					}
 //				}).start();
 //			}
-			songs.get(0).play();
+			//songs.get(0).play()
+			
 		} catch (InvalidMidiDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

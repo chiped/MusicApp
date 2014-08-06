@@ -31,6 +31,7 @@ public class Song {
 	public Song() {
 		notes = new ArrayList<Note>();
 		key = new HashSet<String>();
+		tempo = 120;
 	}
 
 	protected Song(String songName, String instrument, ArrayList<Note> notes,
@@ -275,7 +276,20 @@ public class Song {
 		} catch (MidiUnavailableException e) {}
 	}
 	
-	
+	public static Song OneGramPathToSong(ArrayList<Pair<NGram<Note>, NGram<Note>>> oneGramPath){
+		Song newSong = new Song();
+		double time = 0.0;
+		for(Pair<NGram<Note>, NGram<Note>> p:oneGramPath){
+			double newNoteDuration = p.getL().getItems().get(0).getDuration();
+			Note newNote = new Note(newNoteDuration,p.getL().getItems().get(0).getPitch(), time);
+			time += newNoteDuration;
+			newSong.addNote(newNote);
+		}
+		Note oldNote = oneGramPath.get(oneGramPath.size() - 1).getR().getItems().get(0);
+		Note newNote = new Note(oldNote.getDuration(), oldNote.getPitch(), time);
+		newSong.addNote(newNote);
+		return newSong;
+	}
 	/*
 	public static Song makeSongFromFile(String filePath) {
 		try {
