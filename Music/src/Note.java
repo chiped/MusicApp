@@ -69,6 +69,17 @@ public class Note implements Comparable<Note>{
 		}
 		return false;
 	}
+	@Override 
+	public int hashCode(){
+		int sum = 0;
+		if(duration != 0){
+			sum += (int) 1 / duration;
+		}
+		for(int i = 0; i < pitch.size(); i++){
+			sum+= 14401 * (i+2) + (pitch.get(i).intValue() * 83);
+		}
+		return sum;
+	}
 	@Override
 	public int compareTo(Note o) {
 		// TODO Auto-generated method stub

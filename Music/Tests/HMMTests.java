@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -42,29 +42,29 @@ public class HMMTests {
 		assertEquals(true, model.getStates().contains("3"));
 		assertEquals(true, model.getObservations().contains("a"));
 		assertEquals(true, model.getObservations().contains("b"));
-		TreeMap<String,Double> initial = model.getInitialProbabilities();
+		HashMap<String,Double> initial = model.getInitialProbabilities();
 		assertEquals(new Double(4.0/7), initial.get("1"));
 		assertEquals(new Double(2.0/7), initial.get("2"));
 		assertEquals(new Double(1.0/7), initial.get("3"));
 		
 		
-		TreeMap<String,Double> transition1 = model.getTransitionProbabilities().get("1");
-		TreeMap<String,Double> observation1 = model.getObservationProbabilities().get("1");
+		HashMap<String,Double> transition1 = model.getTransitionProbabilities().get("1");
+		HashMap<String,Double> observation1 = model.getObservationProbabilities().get("1");
 		assertEquals(new Double(1/3.0),transition1.get("1"));
 		assertEquals(new Double(2/3.0),transition1.get("2"));
 		assertEquals(new Double(1/2.0),observation1.get("a"));
 		assertEquals(new Double(1/2.0),observation1.get("b"));
 		
 		
-		TreeMap<String,Double> transition2 = model.getTransitionProbabilities().get("2");
-		TreeMap<String,Double> observation2 = model.getObservationProbabilities().get("2");
+		HashMap<String,Double> transition2 = model.getTransitionProbabilities().get("2");
+		HashMap<String,Double> observation2 = model.getObservationProbabilities().get("2");
 		assertEquals(new Double(1/2.0),transition2.get("1"));
 		assertEquals(new Double(1/2.0),transition2.get("3"));
 		assertEquals(new Double(1/2.0),observation2.get("a"));
 		assertEquals(new Double(1/2.0),observation2.get("b"));
 		
-		TreeMap<String,Double> transition3 = model.getTransitionProbabilities().get("3");
-		TreeMap<String,Double> observation3 = model.getObservationProbabilities().get("3");		
+		HashMap<String,Double> transition3 = model.getTransitionProbabilities().get("3");
+		HashMap<String,Double> observation3 = model.getObservationProbabilities().get("3");		
 		assertEquals(new Double(1),transition3.get("1"));
 		assertEquals(new Double(1),observation3.get("a"));
 		

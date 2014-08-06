@@ -60,7 +60,13 @@ public class NGram<E extends Comparable<E>> implements Comparable<NGram<E>> {
 	public String toString() {
 		return items.toString();
 	}
-
+	public boolean equals(Object o){
+		if(o instanceof NGram){
+			NGram<E> other = (NGram<E>) o;
+			return compareTo(other) == 0;
+		}
+		return false;
+	}
 	@Override
 	public int compareTo(NGram<E> o) {
 		// TODO Auto-generated method stub
@@ -74,6 +80,15 @@ public class NGram<E extends Comparable<E>> implements Comparable<NGram<E>> {
 			}
 		}
 		return cmp;
+	}
+	
+	@Override
+	public int hashCode(){
+		int sum = 0;
+		for(int i = 0; i < getItems().size(); i++){
+			sum += 1000033 *( i + 2) + getItems().get(i).hashCode();
+		}
+		return sum;
 	}
 
 }
