@@ -153,12 +153,15 @@ public class Song {
 						currentPitches.remove(pitch);
 						song.getKey().add(NOTE_NAMES[pitch%12]);
 					} else if (sm.getCommand() == NOTE_ON) {
-						if(!currentPitches.isEmpty()) {
-							double duration = tick - arrivalTime;
-							if(duration > 0) {
-								double tickDuration = duration / ppq;
+						double duration = tick - arrivalTime;
+						if(duration > 0) {
+							double tickDuration = duration / ppq;
+							if(!currentPitches.isEmpty()) {
 								ArrayList<Integer> pitches = new ArrayList<Integer>(currentPitches);
 								song.addNote(new Note(tickDuration, pitches, (double)arrivalTime/ppq));
+							}
+							else {
+								song.addNote(new Note(tickDuration, new ArrayList<Integer>(), (double)arrivalTime/ppq));
 							}
 						}
 						arrivalTime = tick;
