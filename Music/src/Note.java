@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Note{
+public class Note implements Comparable<Note>{
 	/**
 	 * 
 	 */
@@ -59,5 +59,41 @@ public class Note{
 		double duration = Double.parseDouble(durationString);
 		double arrivalTime = Double.parseDouble(arrivalTimeString);
 		return new Note(duration,pitch, arrivalTime);
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Note){
+			Note other = (Note) o;
+			return compareTo(other) == 0;
+		}
+		return false;
+	}
+	@Override 
+	public int hashCode(){
+		int sum = 0;
+		if(duration != 0){
+			sum += (int) 1 / duration;
+		}
+		for(int i = 0; i < pitch.size(); i++){
+			sum+= 14401 * (i+2) + (pitch.get(i).intValue() * 83);
+		}
+		return sum;
+	}
+	@Override
+	public int compareTo(Note o) {
+		// TODO Auto-generated method stub
+		int cmp = 0;
+		if(this.getDuration() - o.getDuration() != 0){
+			cmp = 1;
+		}
+		if(cmp == 0){
+			if(pitch.containsAll(o.getPitch()) && (o.getPitch()).containsAll(pitch)){
+				cmp = 0;
+			}else{
+				cmp = -1;
+			}
+		}
+		return cmp;
 	}
 }
