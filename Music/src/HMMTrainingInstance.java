@@ -52,6 +52,7 @@ public class HMMTrainingInstance<State extends Comparable,Observation extends Co
 			previous.setNextInstance(instance);
 			previous = instance;
 		}
+		previous.setNextInstance(returnList.get(0));
 		return returnList;
 	}
 	public String toString(){

@@ -8,7 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		File midi = new File("C:\\Users\\Matthew\\Desktop\\furelise.mid");
+		File midi = new File("C:\\Users\\ChiP\\Desktop\\midiTest3.mid");
 		Song finalSong;
 		try {
 			ArrayList<Song> songs = Song.makeSongFromMidiFile(midi);

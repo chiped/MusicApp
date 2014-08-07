@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 
 public class NGram<E extends Comparable<E>> implements Comparable<NGram<E>> {
 
@@ -81,7 +80,7 @@ public class NGram<E extends Comparable<E>> implements Comparable<NGram<E>> {
 		}
 		return cmp;
 	}
-	
+
 	@Override
 	public int hashCode(){
 		int sum = 0;
