@@ -16,7 +16,6 @@ public class Main {
 				for(Note n : song.getNotes()){
 					System.out.println(n);
 				}
-				
 				ArrayList<NGram<Note>> oneGram = NGram.getNGrams(song.getNotes(), 1);
 				try {//list based on one gram. each note is inside an NGram.
 					ArrayList<HMMTrainingInstance<NGram<Note>, NGram<Note>>> trainingSet = HMMTrainingInstance.createList(oneGram.subList(0, oneGram.size()-1), oneGram.subList(1, oneGram.size()));
@@ -38,6 +37,8 @@ public class Main {
 					finalSong = Song.OneGramPathToSong(oneGramPath);
 					System.out.println("new song");
 					System.out.println(finalSong);
+					finalSong.setSongName("finalSong");
+					finalSong.writeToFile("C:\\Users\\ChiP\\Desktop");
 					finalSong.play();
 				} catch (Exception e) {
 					e.printStackTrace();
